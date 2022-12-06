@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yqyao.github.io">
+  <title>Dynamic-Checkpoint | sound</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="DC 显存优化背景知识PyTorch Checkpoint 技术一直是我们在训练模型的时候常使用的一个显存优化的技术，但是这种技术一般都对于用户有一定的门槛，毕竟用户要自己手动去插入code 去进行设计开多少模块，同时如果网咯输入在不断的变化，我们每次都开启同样的Checkpoint 是没必要，通常会拖慢整体的训练速度。应用场景如下  多尺度训练, 输入可变化对于多尺度训练，为了保证训练不爆显存，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dynamic-Checkpoint">
+<meta property="og:url" content="http://yqyao.github.io/2022/03/10/dynamic_checkpoint/index.html">
+<meta property="og:site_name" content="sound">
+<meta property="og:description" content="DC 显存优化背景知识PyTorch Checkpoint 技术一直是我们在训练模型的时候常使用的一个显存优化的技术，但是这种技术一般都对于用户有一定的门槛，毕竟用户要自己手动去插入code 去进行设计开多少模块，同时如果网咯输入在不断的变化，我们每次都开启同样的Checkpoint 是没必要，通常会拖慢整体的训练速度。应用场景如下  多尺度训练, 输入可变化对于多尺度训练，为了保证训练不爆显存，">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-03-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-03T08:25:46.154Z">
+<meta property="article:author" content="姚勇强">
+<meta property="article:tag" content="PyTorch">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="sound" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/back.jpg">
+  
+  
+<link rel="stylesheet" href="/main.css?v=4.0.0.css">
+
+  
+
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?[object Object]";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container" q-class="show:isCtnShow">
+    <canvas id="anm-canvas" class="anm-canvas"></canvas>
+    <div class="left-col" q-class="show:isShow">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			<img src="/img/avatar.png" class="js-avatar">
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/"></a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">归档</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a data-idx="0" q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a data-idx="1" q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-sort"></i></div>
+  		<h1 class="header-author js-mobile-header hide"></h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img src="/img/avatar.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author"></h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">归档</a></li>
+		        
+		        
+		        	<li><a href="/archives/">所有文章</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div id="wrapper" class="body-wrap">
+        <div class="menu-l">
+          <div class="canvas-wrap">
+            <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
+          </div>
+          <div id="js-content" class="content-ll">
+            <article id="post-dynamic_checkpoint" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Dynamic-Checkpoint
+    </h1>
+  
+
+        <a href="/2022/03/10/dynamic_checkpoint/" class="archive-article-date">
+  	<time datetime="2022-03-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-10</time>
+</a>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="DC-显存优化"><a href="#DC-显存优化" class="headerlink" title="DC 显存优化"></a>DC 显存优化</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>PyTorch Checkpoint 技术一直是我们在训练模型的时候常使用的一个显存优化的技术，但是这种技术一般都对于用户有一定的门槛，毕竟用户要自己手动去插入code 去进行设计开多少模块，同时如果网咯输入在不断的变化，我们每次都开启同样的Checkpoint 是没必要，通常会拖慢整体的训练速度。<br>应用场景如下</p>
+<ul>
+<li><p>多尺度训练, 输入可变化<br>对于多尺度训练，为了保证训练不爆显存，我们需要保证在最大尺度输入的时候有足够的显存供模型训练，所以如果是静态的Checkpoint，那训练的时候必须一致将比较多的模块进行Checkpoint。但是对于小尺度输入，训练显存是完全够用的，如果也开着Checkpoint 就会显著拖慢训练速度，因为需要在大尺度的训练时候开比较多的模块的Checkpoint，在小尺度的时候不开或者少开一些模块的Checkpoint。</p>
+</li>
+<li><p>输入不变化，模块比较多，需要人工设计</p>
+</li>
+</ul>
+<p>这种场景也是同样的问题，假设我们只需要开启部分的Checkpoint模块就可以达到节省显存的要求，那么如何选取这些模块就是一个比较工程的问题，需要用户去每次不断的尝试，这样不仅费时费力，同时也不一定能选择最优的模块。</p>
+<h2 id="原理介绍"><a href="#原理介绍" class="headerlink" title="原理介绍"></a>原理介绍</h2><ul>
+<li>自动解析模型结构、插入Checkpoint</li>
+</ul>
+<p>要实现动态的Checkpoint 模块，首先得去除人工插入Checkpoint这个步骤，也就是我们通过code 和配置去自动解析我们的定义的模型，然后指定哪个模块需要进行Checkpoint （Wrapper 形式就可以做到）</p>
+<ul>
+<li>时间-显存 背包问题最优解</li>
+</ul>
+<p>因为我们要进行动态选取所有的模块是否进行Checkpoint，所以我们需要一个warmup 过程，统计每个模块他开启Checkpoint之后节省了多少显存，同时也需要记录他开启Checkpoint花费的时间。</p>
+<h3 id="Stage-1-收集显存数据，约30-100-iters"><a href="#Stage-1-收集显存数据，约30-100-iters" class="headerlink" title="Stage 1 收集显存数据，约30-100 iters"></a>Stage 1 收集显存数据，约30-100 iters</h3><ul>
+<li><p>before_forward: 记录当前input输入大小、显存占用，并重置pytorch显存统计数据；获得当前应该checkpoint的Module集合（默认是全部的Bottleneck、SwinTransformerBlock、Encoder等）</p>
+</li>
+<li><p>after_update：记录最大的显存占用，并计算出 model 从 forward 开始到 update 结束所需要的显存大小；</p>
+</li>
+</ul>
+<h3 id="Stage-2-优化显存占用"><a href="#Stage-2-优化显存占用" class="headerlink" title="Stage 2 优化显存占用"></a>Stage 2 优化显存占用</h3><ul>
+<li>before_forward：记录当前 input 输入大小，若 cache 中已有该 input 的优化plan，则直接应用该 plan；反之，则通过背包算法选取满足最小显存同时速度最少的 checkpoint module set，以此作为优化 plan 进行应用，并保存到 cache 中 </li>
+<li>dc_cast_forward：查找当前 Module 是否在 checkpoint module set 中，若在，则执行 checkpoint forward；反之，则正常执行 forward</li>
+</ul>
+<h3 id="Up-里面样例展示"><a href="#Up-里面样例展示" class="headerlink" title="Up 里面样例展示"></a>Up 里面样例展示</h3><p><strong>config</strong> 展示</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hooks:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">memory_checkpoint</span></span><br><span class="line">    <span class="attr">kwargs:</span></span><br><span class="line">        <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">        <span class="attr">checkpoint_patterns:</span></span><br><span class="line">           <span class="attr">backbone:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">4</span> <span class="comment">#当resnet时设置为2</span></span><br><span class="line">           <span class="attr">neck:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">           <span class="attr">roi_head:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">              <span class="attr">share_weight_num:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">dc_cfg:</span></span><br><span class="line">           <span class="attr">warmup_iters:</span> <span class="number">30</span> <span class="comment">#控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确</span></span><br><span class="line">           <span class="attr">max_memory:</span> <span class="number">8</span> <span class="comment">#控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</span></span><br><span class="line">           <span class="attr">debug_freq:</span> <span class="number">10</span> <span class="comment">#打印信息的频率</span></span><br><span class="line">           <span class="attr">strategy:</span> <span class="string">greedy</span> <span class="comment"># memory_time or greedy #</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>warmup_iters</strong></p>
+<ul>
+<li>单位 iteration, 控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确。profiling也会消耗大量的时间，但是overhead 小于 warmup_iters * iter_time</li>
+<li>如果是分类任务，显存占用没有变化，可以将warmup_iters调低，比如10。</li>
+<li>如果是 input size - 显存占用关系比较明显的任务，比如提到的适用 task，则可以设为30左右。</li>
+<li>如果是相同 input size 下也有较大的显存变化，那么理论上不适用该任务。如果使用 dynamic checkpoint，则需要将其设置更多的值。</li>
+</ul>
+<p><strong>max_memory</strong></p>
+<ul>
+<li>单位GB, 这部分为控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</li>
+<li>当任务为输入固定的分类任务时，memory_threshold 可以调的更高。</li>
+<li>如果任务为2 stage的目标检测任务，则需要调低 memory_threshold。因为该类任务显存在相同输入的情况下， 变化较大， 所以需要使用更加保守的设置。</li>
+<li>如果任务执行过程中发生了 OOM，如果是显存碎片的影响，则需要调低 memory_threshold，如 1 GB 或 0.5 GB为单位；如果是backbone本身显存优化空间不足，那么可能需要替换其它方法进行优化。</li>
+</ul>
+<p><strong>debug_freq</strong></p>
+<ul>
+<li>在warmup_iters 后，输出优化schedule的iter频率</li>
+</ul>
+<p><strong>strategy</strong></p>
+<ul>
+<li>可选memory_time或者greedy</li>
+<li>其他用户自定义的一些优化算法</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PyTorch/" rel="tag">PyTorch</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-book icon"></i>
+	<a class="article-category-link" href="/categories/%E6%A1%86%E6%9E%B6%E4%BC%98%E5%8C%96/">框架优化</a>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2022/12/02/resume/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Resume
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/01/01/unite_perception/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">United Perception</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2022 姚勇强
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		mathjax: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+
+</script>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cae73264bdf8671f85792a172a2039d0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<script src="/./main.js?v=4.0.0.js"></script>
+
+
+
+    
+<div class="tools-col" q-class="show:isShow,hide:isShow|isFalse" q-on="click:stop(e)">
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all" q-show="innerArchive">
+        <div class="search-wrap">
+          <input class="search-ipt" q-model="search" type="text" placeholder="find something…">
+          <i class="icon-search icon" q-show="search|isEmptyStr"></i>
+          <i class="icon-close icon" q-show="search|isNotEmptyStr" q-on="click:clearChose(e)"></i>
+        </div>
+        <div class="widget tagcloud search-tag">
+          <p class="search-tag-wording">tag:</p>
+          <label class="search-switch">
+            <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
+          </label>
+          <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">Det</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">PyTorch</a>
+              </li>
+            
+            <div class="clearfix"></div>
+          </ul>
+        </div>
+        <ul class="search-ul">
+          <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
+            缺失模块。<br/>1、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
+            2、在根目录_config.yml里添加配置：
+<pre style="font-size: 12px;" q-show="jsonFail">
+  jsonContent:
+    meta: false
+    pages: false
+    posts:
+      title: true
+      date: true
+      path: true
+      text: true
+      raw: false
+      content: false
+      slug: false
+      updated: false
+      comments: false
+      link: false
+      permalink: false
+      excerpt: false
+      categories: false
+      tags: true
+</pre>
+          </p>
+          <li class="search-li" q-repeat="items" q-show="isShow">
+            <a q-attr="href:path|urlformat" class="search-title"><i class="icon-quo-left icon"></i><span q-text="title"></span></a>
+            <p class="search-time">
+              <i class="icon-calendar icon"></i>
+              <span q-text="date|dateformat"></span>
+            </p>
+            <p class="search-tag">
+              <i class="icon-price-tags icon"></i>
+              <span q-repeat="tags" q-on="click:choseTag(e, name)" q-text="name|tagformat"></span>
+            </p>
+          </li>
+        </ul>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me" q-show="aboutme">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">个人主页&lt;br&gt;&lt;br&gt;记录自己做过的事&lt;br&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

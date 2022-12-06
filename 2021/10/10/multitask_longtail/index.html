@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yqyao.github.io">
+  <title>MultiTask LongTail Uni | sound</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="MultiTask LongTail Uni长尾问题一直是现实场景中比较困扰的问题，或者说在DL 这种数据驱动的场景下也是比较难以解决的问题，大量的特殊类别只有少量的可使用标签，在这里我们和下游团队共同提出了一种新的解决方案的范式，利用多任务训练和海量的数据进行表征训练，然后再下游任务进行迁移，然后整体的提升长尾类别的性能。 Uni 模型也是实际场景一个常用的需求，多个模型需要合并成一个模型输出，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MultiTask LongTail Uni">
+<meta property="og:url" content="http://yqyao.github.io/2021/10/10/multitask_longtail/index.html">
+<meta property="og:site_name" content="sound">
+<meta property="og:description" content="MultiTask LongTail Uni长尾问题一直是现实场景中比较困扰的问题，或者说在DL 这种数据驱动的场景下也是比较难以解决的问题，大量的特殊类别只有少量的可使用标签，在这里我们和下游团队共同提出了一种新的解决方案的范式，利用多任务训练和海量的数据进行表征训练，然后再下游任务进行迁移，然后整体的提升长尾类别的性能。 Uni 模型也是实际场景一个常用的需求，多个模型需要合并成一个模型输出，">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-10-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-03T11:03:23.476Z">
+<meta property="article:author" content="姚勇强">
+<meta property="article:tag" content="Det">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="sound" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/back.jpg">
+  
+  
+<link rel="stylesheet" href="/main.css?v=4.0.0.css">
+
+  
+
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?[object Object]";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container" q-class="show:isCtnShow">
+    <canvas id="anm-canvas" class="anm-canvas"></canvas>
+    <div class="left-col" q-class="show:isShow">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			<img src="/img/avatar.png" class="js-avatar">
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/"></a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">归档</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a data-idx="0" q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a data-idx="1" q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-sort"></i></div>
+  		<h1 class="header-author js-mobile-header hide"></h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img src="/img/avatar.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author"></h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">归档</a></li>
+		        
+		        
+		        	<li><a href="/archives/">所有文章</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div id="wrapper" class="body-wrap">
+        <div class="menu-l">
+          <div class="canvas-wrap">
+            <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
+          </div>
+          <div id="js-content" class="content-ll">
+            <article id="post-multitask_longtail" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MultiTask LongTail Uni
+    </h1>
+  
+
+        <a href="/2021/10/10/multitask_longtail/" class="archive-article-date">
+  	<time datetime="2021-10-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-10</time>
+</a>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="MultiTask-LongTail-Uni"><a href="#MultiTask-LongTail-Uni" class="headerlink" title="MultiTask LongTail Uni"></a>MultiTask LongTail Uni</h1><p>长尾问题一直是现实场景中比较困扰的问题，或者说在DL 这种数据驱动的场景下也是比较难以解决的问题，大量的特殊类别只有少量的可使用标签，在这里我们和下游团队共同提出了一种新的解决方案的范式，利用多任务训练和海量的数据进行表征训练，然后再下游任务进行迁移，然后整体的提升长尾类别的性能。</p>
+<p>Uni 模型也是实际场景一个常用的需求，多个模型需要合并成一个模型输出，这样可以大幅度减少模型的处理耗时，我们针对自动驾驶的多个任务进行了任务尝试，利用CrossDataset 这种伪的多任务训练方式，帮助构建了一套完整的pipeline。</p>
+<h2 id="多任务训练的框架层面设计"><a href="#多任务训练的框架层面设计" class="headerlink" title="多任务训练的框架层面设计"></a>多任务训练的框架层面设计</h2><p>我们这里用最原始的方式进行训练，共享Backbone 、Neck 部分，然后不同的任务用不同的head 进行训练。</p>
+<ul>
+<li>构建多个Dataloader 每个任务一个dataloader，因为设计大规模数据集训练，Det 是coco、oid、obj365 等等<br>分类是imagenet22k、分割是MSeg, 几个任务都属于数据量非常大，因此需要用到之前的 rankdataset 配合使用</li>
+<li>多次forward 一次backward，每个任务一个loss weight，我们这里主体的任务是为了检测服务，所以检测的权重比较高，分类的权重比较低</li>
+</ul>
+<h2 id="算法层面设计-多stage-训练方式"><a href="#算法层面设计-多stage-训练方式" class="headerlink" title="算法层面设计-多stage 训练方式"></a>算法层面设计-多stage 训练方式</h2><ul>
+<li><p>通用流程</p>
+<ul>
+<li>Stage1 通用表征训练，Det + Cls + Seg + 其他 基础视觉任务 联合训练，每个任务都用对应的高精度的Baseline</li>
+<li>Stage2 下游检测数据domain 迁移<br>下游检测数据Det RPN + 分类数据 Cls 联合训练， 为了保持其对于下游任务的高召回率，同时又需要保证表征不丢失基础的分类能力</li>
+<li>Stage3 Decouple 训练方式，Backbone 表征fix 住，下游head 进行Finetune</li>
+</ul>
+</li>
+<li><p>细节</p>
+<ul>
+<li>此套流程分成2阶段Det 和一阶段Det算法，同时这个任务是一个长尾的任务，因此 Stage1 的基础表征训练非常重要，也就是基础的Baseline 要足够高，我们设计了一套长尾的loss + Aug 大幅度提升了整体的精度</li>
+<li>学术LVIS 层面，我们针对检测任务标注毕竟难以获得，设计了一套Det + cls 的联合训练的pipepline，也是大幅度提升LVIS 的精度，当然后续也投稿了论文</li>
+<li>此任务增加标签非常容易，间接的解决了增加cls 的问题，每次只需要增加一个head 的计算量</li>
+<li>此任务可以动态的选择需要输出几个标签，因为不同标签对应着不同的head，在部署的时候可以随意组合。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Uni-model"><a href="#Uni-model" class="headerlink" title="Uni-model"></a>Uni-model</h2><ul>
+<li><p>合并的基础<br>输入是同一个图片，同时数据分布是同一个，同时他们没有直接的共同标注，可以用multitask 去做，但是稍显复杂，这里我们使用Cross 的训练思路，近似一个多任务训练，将自动驾驶的多个模型融合成一个模型，节省了大约一半的时间，同时精度得到了一定的提升。</p>
+</li>
+<li><p>Uni-Det</p>
+<ul>
+<li>CrossFocalLoss 为核心，task balance sampler 为辅助，平衡多个任务</li>
+<li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li>
+<li>不同任务离线合并成一个任务</li>
+</ul>
+</li>
+<li><p>Uni-Cls</p>
+<ul>
+<li>类似属性训练，一个backbone 接多个head 同时支持多个图片属性</li>
+<li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li>
+<li>不同任务离线合并成一个任务</li>
+</ul>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Det/" rel="tag">Det</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-book icon"></i>
+	<a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95%E4%BC%98%E5%8C%96/">算法优化</a>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2022/01/01/unite_perception/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          United Perception
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/08/10/hardware_design_det/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Hardware-Design</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2022 姚勇强
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		mathjax: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+
+</script>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cae73264bdf8671f85792a172a2039d0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<script src="/./main.js?v=4.0.0.js"></script>
+
+
+
+    
+<div class="tools-col" q-class="show:isShow,hide:isShow|isFalse" q-on="click:stop(e)">
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all" q-show="innerArchive">
+        <div class="search-wrap">
+          <input class="search-ipt" q-model="search" type="text" placeholder="find something…">
+          <i class="icon-search icon" q-show="search|isEmptyStr"></i>
+          <i class="icon-close icon" q-show="search|isNotEmptyStr" q-on="click:clearChose(e)"></i>
+        </div>
+        <div class="widget tagcloud search-tag">
+          <p class="search-tag-wording">tag:</p>
+          <label class="search-switch">
+            <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
+          </label>
+          <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">Det</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">PyTorch</a>
+              </li>
+            
+            <div class="clearfix"></div>
+          </ul>
+        </div>
+        <ul class="search-ul">
+          <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
+            缺失模块。<br/>1、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
+            2、在根目录_config.yml里添加配置：
+<pre style="font-size: 12px;" q-show="jsonFail">
+  jsonContent:
+    meta: false
+    pages: false
+    posts:
+      title: true
+      date: true
+      path: true
+      text: true
+      raw: false
+      content: false
+      slug: false
+      updated: false
+      comments: false
+      link: false
+      permalink: false
+      excerpt: false
+      categories: false
+      tags: true
+</pre>
+          </p>
+          <li class="search-li" q-repeat="items" q-show="isShow">
+            <a q-attr="href:path|urlformat" class="search-title"><i class="icon-quo-left icon"></i><span q-text="title"></span></a>
+            <p class="search-time">
+              <i class="icon-calendar icon"></i>
+              <span q-text="date|dateformat"></span>
+            </p>
+            <p class="search-tag">
+              <i class="icon-price-tags icon"></i>
+              <span q-repeat="tags" q-on="click:choseTag(e, name)" q-text="name|tagformat"></span>
+            </p>
+          </li>
+        </ul>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me" q-show="aboutme">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">个人主页&lt;br&gt;&lt;br&gt;记录自己做过的事&lt;br&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>

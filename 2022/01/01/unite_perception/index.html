@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <link rel="dns-prefetch" href="http://yqyao.github.io">
+  <title>United Perception | sound</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="UP背景为了方便用户生成不同的感知模型，不用多次熟悉不同的框架，我们开发了面向模型高效率、高质量生产的联合感知模型生产框架, 上线以来累计用户150+，调用了7w+。开源版本特性  全自动部署，一键部署到公司的部署平台ADELA 高精度的Baseline 提供多种模型提升的工具 业务code 和框架code 解耦  算法功能支持 算法层面 检测 分类 分割 Keypoint 3d-pointpil">
+<meta property="og:type" content="article">
+<meta property="og:title" content="United Perception">
+<meta property="og:url" content="http://yqyao.github.io/2022/01/01/unite_perception/index.html">
+<meta property="og:site_name" content="sound">
+<meta property="og:description" content="UP背景为了方便用户生成不同的感知模型，不用多次熟悉不同的框架，我们开发了面向模型高效率、高质量生产的联合感知模型生产框架, 上线以来累计用户150+，调用了7w+。开源版本特性  全自动部署，一键部署到公司的部署平台ADELA 高精度的Baseline 提供多种模型提升的工具 业务code 和框架code 解耦  算法功能支持 算法层面 检测 分类 分割 Keypoint 3d-pointpil">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-03T12:53:52.061Z">
+<meta property="article:author" content="姚勇强">
+<meta property="article:tag" content="PyTorch">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="sound" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/img/back.jpg">
+  
+  
+<link rel="stylesheet" href="/main.css?v=4.0.0.css">
+
+  
+
+  
+<script>
+var _hmt = _hmt || [];
+(function() {
+	var hm = document.createElement("script");
+	hm.src = "https://hm.baidu.com/hm.js?[object Object]";
+	var s = document.getElementsByTagName("script")[0]; 
+	s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container" q-class="show:isCtnShow">
+    <canvas id="anm-canvas" class="anm-canvas"></canvas>
+    <div class="left-col" q-class="show:isShow">
+      <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			<img src="/img/avatar.png" class="js-avatar">
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/"></a></h1>
+		</hgroup>
+
+		
+
+		<nav class="header-menu">
+			<ul>
+			
+				<li><a href="/">主页</a></li>
+	        
+				<li><a href="/archives">归档</a></li>
+	        
+			</ul>
+		</nav>
+		<nav class="header-smart-menu">
+	        
+    		
+    			
+    			<a data-idx="0" q-on="click: openSlider(e, 'innerArchive')" href="javascript:void(0)">所有文章</a>
+    			
+    			
+            
+    			
+    			<a data-idx="1" q-on="click: openSlider(e, 'aboutme')" href="javascript:void(0)">关于我</a>
+    			
+    			
+            
+		</nav>
+		<nav class="header-nav">
+			<div class="social">
+				
+					<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+		        
+			</div>
+		</nav>
+	</header>		
+</div>
+
+    </div>
+    <div class="mid-col" q-class="show:isShow,hide:isShow|isFalse">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"><i class="icon-sort"></i></div>
+  		<h1 class="header-author js-mobile-header hide"></h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img src="/img/avatar.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author"></h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">归档</a></li>
+		        
+		        
+		        	<li><a href="/archives/">所有文章</a></li>
+		        
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/yqyao" title="github"><i class="icon-github"></i></a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div id="wrapper" class="body-wrap">
+        <div class="menu-l">
+          <div class="canvas-wrap">
+            <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
+          </div>
+          <div id="js-content" class="content-ll">
+            <article id="post-unite_perception" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      United Perception
+    </h1>
+  
+
+        <a href="/2022/01/01/unite_perception/" class="archive-article-date">
+  	<time datetime="2021-12-31T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-01</time>
+</a>
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="UP"><a href="#UP" class="headerlink" title="UP"></a>UP</h1><p><strong>背景</strong><br>为了方便用户生成不同的感知模型，不用多次熟悉不同的框架，我们开发了面向模型高效率、高质量生产的联合感知模型生产框架, 上线以来累计用户150+，调用了7w+。<a target="_blank" rel="noopener" href="https://github.com/ModelTC/United-Perception">开源版本</a><br><strong>特性</strong></p>
+<ul>
+<li>全自动部署，一键部署到公司的部署平台ADELA</li>
+<li>高精度的Baseline</li>
+<li>提供多种模型提升的工具</li>
+<li>业务code 和框架code 解耦</li>
+</ul>
+<h2 id="算法功能支持"><a href="#算法功能支持" class="headerlink" title="算法功能支持"></a>算法功能支持</h2><ul>
+<li>算法层面<ul>
+<li>检测</li>
+<li>分类</li>
+<li>分割</li>
+<li>Keypoint</li>
+<li>3d-pointpillar 系列</li>
+<li>mono3d</li>
+<li>自监督</li>
+</ul>
+</li>
+<li>功能层面<ul>
+<li>量化</li>
+<li>蒸馏</li>
+<li>稀疏（特定平台）</li>
+<li>多任务训练</li>
+<li>BigNas 神经网络搜索</li>
+<li>动态Checkpoint</li>
+<li>RankDataset</li>
+<li>CrossDataset</li>
+</ul>
+</li>
+</ul>
+<h2 id="架构解析"><a href="#架构解析" class="headerlink" title="架构解析"></a>架构解析</h2><ul>
+<li>UP<ul>
+<li>Data<ul>
+<li>dataset</li>
+<li>sampler</li>
+<li>reader</li>
+<li>metrics</li>
+</ul>
+</li>
+<li>Models<ul>
+<li>backbone</li>
+<li>neck</li>
+<li>head</li>
+<li>post-process</li>
+<li>losses</li>
+</ul>
+</li>
+<li>Extenstions</li>
+<li>Runner<ul>
+<li>base-runner</li>
+<li>multitask</li>
+<li>quant</li>
+<li>kd</li>
+</ul>
+</li>
+<li>Tasks<ul>
+<li>Det</li>
+<li>Cls</li>
+<li>Seg</li>
+<li>Kp</li>
+<li>MultiTask</li>
+<li>Distill</li>
+<li>…</li>
+</ul>
+</li>
+<li>comnands<ul>
+<li>Train</li>
+<li>Deploy</li>
+<li>Test</li>
+<li>…</li>
+</ul>
+</li>
+<li>Utils<ul>
+<li>model</li>
+<li>env</li>
+<li>general</li>
+<li>deploy</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="开发模式"><a href="#开发模式" class="headerlink" title="开发模式"></a>开发模式</h2><p><strong>UP default tasks + plugins</strong></p>
+<ul>
+<li><p>UP main repo</p>
+<ul>
+<li>det</li>
+<li>cls</li>
+<li>seg</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>Plugins</p>
+<ul>
+<li>face</li>
+<li>struct-det</li>
+<li>attribute</li>
+<li>longtail-cls</li>
+<li>…</li>
+</ul>
+</li>
+<li><p>使用example</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ROOT=up/path</span><br><span class="line">T=`date +%m%d%H%M`</span><br><span class="line">export ROOT=$ROOT</span><br><span class="line">cfg=$2</span><br><span class="line">export PLUGINPATH=your/plugin/path</span><br><span class="line">export DEFAULT_TASKS=cls</span><br><span class="line">export PYTHONPATH=$ROOT:$PYTHONPATH</span><br><span class="line">python -m up train \</span><br><span class="line">  --ng=$1 \</span><br><span class="line">  --launch=pytorch \</span><br><span class="line">  --config=$cfg \</span><br><span class="line">  --display=10 \</span><br><span class="line"><span class="meta prompt_">  2&gt;</span><span class="language-bash">&amp;1 | <span class="built_in">tee</span> log.train.<span class="variable">$T</span>.$(<span class="built_in">basename</span> <span class="variable">$cfg</span>)</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="涵盖的业务"><a href="#涵盖的业务" class="headerlink" title="涵盖的业务"></a>涵盖的业务</h2><ul>
+<li>facedet</li>
+<li>struct-det</li>
+<li>human attribute</li>
+<li>car attribute</li>
+<li>car keypoint</li>
+<li>human keypoint</li>
+<li>action</li>
+<li>long-tail det</li>
+<li>AD-Tlsr det</li>
+<li>AD Uni Det</li>
+<li>…</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PyTorch/" rel="tag">PyTorch</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<i class="icon-book icon"></i>
+	<a class="article-category-link" href="/categories/%E6%A1%86%E6%9E%B6%E4%BC%98%E5%8C%96/">框架优化</a>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2022/03/10/dynamic_checkpoint/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Dynamic-Checkpoint
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/10/10/multitask_longtail/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MultiTask LongTail Uni</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2022 姚勇强
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <script>
+	var yiliaConfig = {
+		mathjax: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false,
+		root: "/",
+		innerArchive: true
+	}
+
+</script>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cae73264bdf8671f85792a172a2039d0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<script src="/./main.js?v=4.0.0.js"></script>
+
+
+
+    
+<div class="tools-col" q-class="show:isShow,hide:isShow|isFalse" q-on="click:stop(e)">
+  <div class="tools-wrap">
+    
+    	<section class="tools-section tools-section-all" q-show="innerArchive">
+        <div class="search-wrap">
+          <input class="search-ipt" q-model="search" type="text" placeholder="find something…">
+          <i class="icon-search icon" q-show="search|isEmptyStr"></i>
+          <i class="icon-close icon" q-show="search|isNotEmptyStr" q-on="click:clearChose(e)"></i>
+        </div>
+        <div class="widget tagcloud search-tag">
+          <p class="search-tag-wording">tag:</p>
+          <label class="search-switch">
+            <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
+          </label>
+          <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">Det</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)">PyTorch</a>
+              </li>
+            
+            <div class="clearfix"></div>
+          </ul>
+        </div>
+        <ul class="search-ul">
+          <p q-show="jsonFail" style="padding: 20px; font-size: 12px;">
+            缺失模块。<br/>1、在博客根目录（注意不是yilia根目录）执行以下命令：<br/> npm i hexo-generator-json-content --save<br/><br/>
+            2、在根目录_config.yml里添加配置：
+<pre style="font-size: 12px;" q-show="jsonFail">
+  jsonContent:
+    meta: false
+    pages: false
+    posts:
+      title: true
+      date: true
+      path: true
+      text: true
+      raw: false
+      content: false
+      slug: false
+      updated: false
+      comments: false
+      link: false
+      permalink: false
+      excerpt: false
+      categories: false
+      tags: true
+</pre>
+          </p>
+          <li class="search-li" q-repeat="items" q-show="isShow">
+            <a q-attr="href:path|urlformat" class="search-title"><i class="icon-quo-left icon"></i><span q-text="title"></span></a>
+            <p class="search-time">
+              <i class="icon-calendar icon"></i>
+              <span q-text="date|dateformat"></span>
+            </p>
+            <p class="search-tag">
+              <i class="icon-price-tags icon"></i>
+              <span q-repeat="tags" q-on="click:choseTag(e, name)" q-text="name|tagformat"></span>
+            </p>
+          </li>
+        </ul>
+    	</section>
+    
+
+    
+
+    
+    	<section class="tools-section tools-section-me" q-show="aboutme">
+  	  	
+  	  		<div class="aboutme-wrap" id="js-aboutme">个人主页&lt;br&gt;&lt;br&gt;记录自己做过的事&lt;br&gt;</div>
+  	  	
+    	</section>
+    
+  </div>
+  
+</div>
+    <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  </div>
+</body>
+</html>
