@@ -1,649 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title>Bag-of-Tricks</title>
-    <url>/2020/12/10/bagoftricks/</url>
-    <content><![CDATA[<h1 id="RetinaNet-Bag-of-Tricks"><a href="#RetinaNet-Bag-of-Tricks" class="headerlink" title="RetinaNet Bag-of-Tricks"></a>RetinaNet Bag-of-Tricks</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>RetinaNet 系列的提升算法有很多，但是实际应用到业务的时候我总结了一些问题，并根据这些问题，针对性<br>弄了高精度的Baseline，方便下游用户快速出一个符合要求的模型。</p>
-<ul>
-<li>各个算法不是可以直接套用的，都需要改代码，然后进行1 + 1 的融合</li>
-<li>各个算法的模块有一些并不是可部署的，不是很实用，用户不太能感知，需要踩坑</li>
-<li>不同的场景数据生效的tricks 可能不太一样，需要用户可以从config 调整</li>
-<li>用户需要一个高精度的baseline 作为基础的发版模型</li>
-</ul>
-<h3 id="baseline-提升方案"><a href="#baseline-提升方案" class="headerlink" title="baseline  提升方案"></a>baseline  提升方案</h3><p>Baseline setting resnet18-256-256 后面两个是FPN 和head的 通道</p>
-<ul>
-<li><p>Benchmark</p>
-<ul>
-<li>Baseline 35.0 (+0)<br> 这个是最基础的Baseline，训3x 的r18 的结果</li>
-<li>stitch_expand + crop Aug 37.1（+ 2.1）<br> stitch expand 为早期在人脸检测上的aug，4 个自己的图拼在一起，随机进行一部分Crop</li>
-<li>Giou 37.3 （+ 0.2）</li>
-<li>Atss 38.3 (+ 1.0)</li>
-<li>QFL 39.5 (+ 1.2)</li>
-<li>Dynamic Normlizer 39.6 (+0.1)<br>  此任务在COCO上没有太大的作用，但是对于稳定训练有着比较好的作用，在普通的det 训练，都要除一个normalizer，这个数字一般是正样本的数量，但是在实际业务当中有很多纯背景的图片，这些是为了抑制误报，这种情况会导致loss 非常大，在某些情况下会导致nan。动态则是会根据loss 值算一个类似focal loss 的值</li>
-<li>Neck Head Bn 40.4 (+0.8)<br>  因为Head 部分不同FPN 共享参数的原因，这里需要进行特殊适配，这里卷积参数需要共享，但是Bn的参数不能共享，因为不同FPN 的分布差距过于大，如果共享之后会导致训练精度正常，eval 的时候精度很低</li>
-<li>L1 + Giou loss 40.6 (+0.2)</li>
-<li>Deep stem 41.4 + (+0.8)<br>  此时一个通用的优化方式，将7 * 7 卷积替换成3 个3*3 的卷积，在损失轻微的速度之后，带来了比较好的精度提升</li>
-<li>Mimic 42.1 + (+ 0.7)<br>  我们这里用的是最原始的蒸馏方式，直接蒸馏FPN 出来的特征层，直接使用L2 loss 即可</li>
-</ul>
-</li>
-<li><p>后续发展</p>
-<ul>
-<li>后续yolo 系列更新的非常快，我们也从其中获取了一些有用的东西，比如一些aug，一些ota 的assign 策略，但是总体的pipeline 还是Retinanet 系列，原因是这个系列比较稳定</li>
-<li>yolo 系列很多时候设计的是为了GPU 平台，同时csp 结构其实量化加速比不是特别高</li>
-<li>Mosaic 这个aug 在coco数据集取得了巨大成功，但是我们发现在下游任务并不是很好，可能改变比较多的数据分布，因此我们一般在训表征的时候会引入这个aug</li>
-<li>ema 和 iou branch 以及ota 这些也是陆陆续续加入这个系列，</li>
-<li>其他部分和yolo 系列网络结构以及参数耦合的比较厉害，不能够直接引入。</li>
-</ul>
-</li>
-<li><p>业务验证</p>
-<ul>
-<li>结构化检测 recall + 3</li>
-<li>TLSR recall + 3</li>
-<li>x 光检测 recall + 2</li>
-<li>其他各类检测均有明显的提升</li>
-</ul>
-</li>
-</ul>
-]]></content>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Resume</title>
+      <link href="/2022/12/02/resume/"/>
+      <url>/2022/12/02/resume/</url>
+      
+        <content type="html"><![CDATA[<h1 id="基本情况"><a href="#基本情况" class="headerlink" title="基本情况"></a>基本情况</h1><h2 id="主要研究方向"><a href="#主要研究方向" class="headerlink" title="主要研究方向"></a>主要研究方向</h2><p>Computer Vision, Deep Learning, Face Detection, Object Detection, Data Imbalanced Learning</p><h2 id="教育背景"><a href="#教育背景" class="headerlink" title="教育背景"></a>教育背景</h2><ul><li>北京邮电大学, 电子与通信工程, 硕士 2017.9 - 2020.6<br>获得北京市优秀毕业生称号，本科保研、研究生期间获得 2018 年国家奖学金</li><li>北京邮电大学, 电子科学与技术, 学士 2013.9 - 2017.6</li></ul><h2 id="论文著作"><a href="#论文著作" class="headerlink" title="论文著作"></a>论文著作</h2><ul><li>Shifeng Zhang, Cheng Chi, Yongqiang Yao, Zhen Lei, Stan Z Li; Bridging the gap between anchor-based and anchor-free detection via adaptive training sample selection &#x2F;&#x2F; Proceedings of the IEEE&#x2F;CVF conference on computer vision and pattern recognition. 2020: 9759-9768. <strong>best paper 提名</strong></li><li>Bo Li, Yongqiang Yao, Jingru Tan, Gang Zhang, Fengwei Yu, Jianwei Lu, Ye Luo; Equalized focal loss for dense long-tailed object detection &#x2F;&#x2F; Proceedings of the IEEE&#x2F;CVF Conference on Computer Vision and Pattern Recognition. 2022: 6990-6999. <strong>共一</strong></li><li>Jingru Tan, Bo Li, Xin Lu, Yongqiang Yao, Fengwei Yu, Tong He, Wanli Ouyang. The Equalization Losses:</li><li>Gradient-Driven Training for Long-tailed Object Recognition &#x2F;&#x2F; arXiv preprint arXiv:2210.05566. 2022. <strong>TPMAI、通讯作者</strong></li><li>Bo Li, Yongqiang Yao, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning &#x2F;&#x2F; arXiv preprint arXiv:2210.05568 <strong>公一 TMM 在投</strong></li><li>Yongqiang Yao, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; Cross-dataset training for class increasing object detection &#x2F;&#x2F; arXiv preprint arXiv:2001.04621.</li><li>Yongqiang Yao, Yuan Dong, Zesang Huang, Hongliang Bai. Dense receptive field for object detection &#x2F;&#x2F; 2018 24th International Conference on Pattern Recognition (ICPR). 2018.</li><li>Weitao Feng, Lei Bai, Yongqiang Yao, Fengwei Yu, Wanli Ouyang. Towards Frame Rate Agnostic Multi-Object Tracking  <strong>IJCV</strong></li><li>Weitao Feng, Lei Bai, Yongqiang Yao, Weihao Gan, Wei Wu, Wanli Ouyang Similarity-and Quality-Guided Relation Learning for Joint Detection and Tracking <strong>TMM</strong></li><li>Bo Li, Yongqiang Yao, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo Rectify Representation Bias in Vision-Language Models for Long-Tailed Recognition &#x2F;&#x2F; Neural Networks 在投</li><li>Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, Yongqiang Yao, Tianzi Xiaotian,Fengwei Yu, Xianglong Liu. SysNoise: Exploring and Benchmarking Training-Deployment System Inconsis-tency &#x2F;&#x2F; MLSys2013</li></ul><h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><h3 id="上海市商汤智能科技有限公司-高级算法研究员（5-正式-2-实习生）-2023-03-至今"><a href="#上海市商汤智能科技有限公司-高级算法研究员（5-正式-2-实习生）-2023-03-至今" class="headerlink" title="上海市商汤智能科技有限公司, 高级算法研究员（5 正式 2 实习生） 2023.03- 至今"></a>上海市商汤智能科技有限公司, 高级算法研究员（5 正式 2 实习生） 2023.03- 至今</h3><ul><li>LLM 大模型SFT训练框架负责人<ul><li>提供大模型训练的基础框架，基于Megatron-Deepspeed 重构，EasyLLM (8月将release code)</li><li>LLM finetune 算法调研，商汤商量finetune API 后台服务提供者</li></ul></li><li>明眸辅助标注算法负责人<ul><li>负责自动驾驶相关大模型辅助标注相关探索，节省标注的成本。</li></ul></li></ul><h3 id="上海市商汤智能科技有限公司-高级算法研究员（5-正式-3-实习生）-2022-06-至今"><a href="#上海市商汤智能科技有限公司-高级算法研究员（5-正式-3-实习生）-2022-06-至今" class="headerlink" title="上海市商汤智能科技有限公司, 高级算法研究员（5 正式 3 实习生） 2022.06 - 至今"></a>上海市商汤智能科技有限公司, 高级算法研究员（5 正式 3 实习生） 2022.06 - 至今</h3><ul><li>联合感知模型生产框架负责人<ul><li>功能介绍<ul><li>上线以来，累计用户 150+，调用量 7w+。</li><li>框架算法支持分类、检测、分割、关键点、3d 点云 point-pillar 系列、mono3d 系列等可部署算<br>法；</li><li>框架算法涵盖下游业务: 人脸、人体、头肩、结构化、工业、各类检测任务；人体属性、车辆<br>属性；人体关键点，车辆关键点；分类业务；车路协同路端 mono3d 和点云算法；</li><li>框架支持神经网络搜索、模型蒸馏、在线量化、特定平台稀疏训练等各类模型精度提升工具。</li><li>超大规模数据集训练支持，解决了超大规模数据集加载的内存溢出问题，支持公司内部 Clip<br>训练。</li><li>跨数据集训练支持，支持不同标签空间的多个数据集混合训练，支持公司人脸人体业务训练。</li><li>多任务训练支持，支持不同的任务进行混合训练，支持检测、分类、分割等多个任务一起进<br>行混合训练。</li><li>动态 Checkpoint 技术，动态的选择最优的 checkpoint 模块进行更快速的模型训练。</li></ul></li><li>业务支持<ul><li>构建自动驾驶 TLSR 检测多模型融合方案，实现了 3 个检测模型合成一个的方案，在基本保<br>持单任务训练精度的同时，大幅度提升整体的推理速度。2022.6-2022.8</li><li>构建自动驾驶分类多模型融合方案，实现了 3 个检测模型合成一个的方案，在基本保持单任务训练精度的同时，大幅度提升整体的推理速度。2022.6-2022.8</li><li>智慧城市结构化检测软硬件协同精度提升；联合硬件测速、配合检测经验大规模的设计网络空间，重新分配分辨率和模型的大小，大幅度提升模型的精度，重新设计的网络在 latency 降低 1ms 的同时，精度提升 4 个点。2022.4-2022.9</li><li>GPU 平台检测后处理优化；分析了高算力平台 latency 瓶颈，合并 batch、类别等多个维度后处理，压缩后处理时间至 1ms 以内，提速后处理 4 倍。2022.8-2022.9</li></ul></li></ul></li></ul><h3 id="上海市商汤智能科技有限公司-计算机视觉研究员（1-正式-3-实习生）-2020-6-2022-5"><a href="#上海市商汤智能科技有限公司-计算机视觉研究员（1-正式-3-实习生）-2020-6-2022-5" class="headerlink" title="上海市商汤智能科技有限公司, 计算机视觉研究员（1 正式 3 实习生） 2020.6 - 2022.5"></a>上海市商汤智能科技有限公司, 计算机视觉研究员（1 正式 3 实习生） 2020.6 - 2022.5</h3><ul><li>工业级目标检测框架负责人<ul><li>自 2018 年上线以来，累计用户 300+，累计调用量 20w+，交付业务模型 2000+，完备的模型生产流程。</li><li>支持了公司内部的人脸检测、结构化检测、自动驾驶 2D PVB 检测、工业检测等各类检测任务的全生命生产流程。</li><li>长尾基础模型提升, 和下游团队一起设计城市级安防产品线的通用目标检测、通用场景分割任务设计了“上游”目标检测 + 语义分割 + 物体分类的 MultiTasking 预训练框架，“中游”基于 camera差异及任务差异的域适应框架，“下游”多分支独立标签、消解竞争关系的检测分割框架；</li><li>检测基础模型精度提升，提出针对 RetinaNet 系列的高精度 Baseline （2020 年底提出），Resnet18为 backbone 达到 42 mAP。</li><li>智慧城市长尾基模型提升；智慧城市下的长尾问题面临着类别多，数据量少的问题，需要通过大规模检测数据进行 pretrain，提供了一个非常高的检测 Baseline 以及长尾算法去整体的提升模型的精度。在二阶段和一阶段 pretrain 模型均有 6 个点提升，下游任务有 3 个点的提升，以上指标均为 <a href="mailto:&#x46;&#80;&#80;&#x49;&#64;&#x30;&#x2e;&#x31;">&#x46;&#80;&#80;&#x49;&#64;&#x30;&#x2e;&#x31;</a> 对应的 recall 2021.4-2021.9</li><li>研究院 x-光安防检测、工业检测等各类通用检测任务提升，平均精度提升 3 个点。2021.4-2021.9</li><li>超大规模数据集训练支持，解决了超大规模数据集加载的内存溢出问题，支持公司内部 Clip 训练, 帮助人脸检测，结构化检测解决了内存溢出问题。</li><li><ul><li>自动驾驶 TLSR 模型提升；在原始的 FCOS 基础上，换用我们最新提供的高精度 Baseline 提升精度 3 个点. 2021.4-2021.9</li></ul></li></ul></li></ul><h3 id="北京市商汤科技开发有限公司-见习计算机视觉研究员-2018-10-2020-6"><a href="#北京市商汤科技开发有限公司-见习计算机视觉研究员-2018-10-2020-6" class="headerlink" title="北京市商汤科技开发有限公司, 见习计算机视觉研究员 2018.10 - 2020.6"></a>北京市商汤科技开发有限公司, 见习计算机视觉研究员 2018.10 - 2020.6</h3><ul><li>独立负责公司内部人脸检测、人脸人体检测、头肩检测等各类检测任务 2018.10 - 2020.1<ul><li>在负责人脸检测期间、独立负责多个系列的模型交付，解决了大量的人脸检测问题，累计提升 5个点。2018.10 - 2020.6</li><li>独立开发出人脸人体混合训练方案，解决了混合数据集带来的标签混淆问题 2019.1 -2019.6</li><li>独立负责公司内部人脸检测框架 FaceDet 开发和维护、构建了一套从训练到部署到数据回流的 Pipeline</li></ul></li></ul><h3 id="北京市飞搜科技开发有限公司-见习计算机视觉研究员-2016-10-2018-10"><a href="#北京市飞搜科技开发有限公司-见习计算机视觉研究员-2016-10-2018-10" class="headerlink" title="北京市飞搜科技开发有限公司, 见习计算机视觉研究员 2016.10 - 2018.10"></a>北京市飞搜科技开发有限公司, 见习计算机视觉研究员 2016.10 - 2018.10</h3><ul><li>独立负责公司内部后端云服务开发 2016.7 - 2017.8</li><li>独立负责公司内部结构化目标检测模型训练和 SDK 编写 2017.8 - 2018.10</li></ul><h2 id="荣誉奖项"><a href="#荣誉奖项" class="headerlink" title="荣誉奖项"></a>荣誉奖项</h2><ul><li><p>算法竞赛</p><ul><li>Low Power Computer Vision Contest FPGA First Place 2021.8</li><li>Low Power Computer Vision Contest Tracking Honorable Mention 2021.8</li><li>2020 年全国水下机器人-水下目标检测算法赛 (光学赛道) 二等奖 2020.8</li></ul></li><li><p>企业荣誉</p><ul><li>商汤团队奖 - 超大模型和通用模型团队 2022.01</li><li>商汤优秀团队奖 - 模型工具链团队 2022.01</li><li>商汤科技 - 最受欢迎开源项目（内部）二等奖 2022.01</li><li>商汤科技 - 杰出员工奖 2023.01</li></ul></li><li><p>其他</p><ul><li>Practical AI Challenge at AAAI 2023 主办人之一、负责赛题设计 2022.12</li><li>UP 开源 repo <a href="https://github.com/ModelTC/United-Perception">https://github.com/ModelTC/United-Perception</a> 2022.6</li><li>个人 github <a href="https://github.com/yqyao">https://github.com/yqyao</a> 2022.12, 累计star 900+</li><li>连续3年在公司内部晋升</li></ul></li></ul>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>Det</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CrossDataset</title>
-    <url>/2019/03/10/crossdataset/</url>
-    <content><![CDATA[<h1 id="CrossDataset-跨数据集训练"><a href="#CrossDataset-跨数据集训练" class="headerlink" title="CrossDataset 跨数据集训练"></a>CrossDataset 跨数据集训练</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>在实际生产环境中，因为历史原因，有各种不同标签的数据集，比如公司里面比较典型人脸和人体的数据集，在早起的时候很多数据只标注了其中的某一个类，所以导致有很多数据他虽然都是同一个场景，但是他只标注了其中一部分标签，而在后续的这种需求当中，统一的模型越来越重要，因为速度层面的要求越来越，而不同数据源因为没有共同标注，所以会存一个类别混淆问题。</p>
-<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>对于一个检测任务来说，我们以2个数据集A、B为例, 来解释这种问题的原因。 在检测训练我们要区分样本的正负属性，对于A 数据集来说， A+, A- 分布表示A 中的正负样本，B+，B- 分布表示B 中的正负样本。对于某一个数据集来说，他们的样本正负属性是已知的，对于跨数据集来说，某个样本属性对于其他数据集是未知的，这个就带来了类别混淆问题。<br>A+ 对于B 来说，有可能是B+ 也有可能是B-, 这种会对于训练造成一定的噪声。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="半监督的解决方案"><a href="#半监督的解决方案" class="headerlink" title="半监督的解决方案"></a>半监督的解决方案</h3><ul>
-<li><p>方案<br>分布训不同数据集的大模型，然后对于不是本数据集的数据进行伪标签标注，给不同的数据集打上统一的标签。</p>
-</li>
-<li><p>优点<br>充分利用了不同数据集的样本数据，通过伪标签的形式统一了标签空间。</p>
-</li>
-<li><p>缺点<br>需要多次训练不同数据源的大模型，而且不同数据源生成的伪标签质量不能保证，会带来一些额外的噪声</p>
-</li>
-</ul>
-<h3 id="Cross-训练"><a href="#Cross-训练" class="headerlink" title="Cross 训练"></a>Cross 训练</h3><ul>
-<li>方案<br>假设每个数据集它都能已经比较好的收敛了，对于此标签任务来说，目前的数据集已经可以提供比较多的样本数据进行训练，其他数据源的数据没有起到决定性作用。<br>我们在训练的时候，可以将这个任务当做一个伪 multitask任务来训练，将不同类别的训练和数据集进行绑定，让他们训练对应的类别数据时不产生干扰。</li>
-</ul>
-<p><strong>具体做法如下</strong><br>我们首先给不同的数据集的负样本一个特殊标签，用于标定负样本来自哪个数据集，因为正样本这个属性对于不同数据集他是共享的，也是已知的，A+ 一定是B-, 这个是已知确定的，可以正常参与训练，我们只需要控制B- 不作为 A- 既可。在训练的时候每个数据集对应的类别只会使用到对应的数据的负样本 和所有正样本，其他数据集的负样本在计算loss的时候均被忽略，这里保证整个训练近似是一个multitask的任务，只有head 部分是不共享的。</p>
-<ul>
-<li><p>优点<br>训练完全没有噪声，所有的标签都是已知的，不存在任何不确定的标签，整个训练比较稳定，能够相对不同的任务独立。</p>
-</li>
-<li><p>缺点<br>没有充分利用其他数据集的数据，浪费了一些已有数据</p>
-</li>
-</ul>
-<h3 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h3><p>半监督方式非常依赖大模型的正确性，而且在面对增长的数据集问题比较无力，每次新增一个数据集（多一些类别）可能之前所有的数据集都要进行伪标签标注，成本比较高，效果也一般般，<br>我们在人脸人体这种存在大量的混淆样本上，这种伪标签的形式基本效果比较差，在一些共同标注比较少的数据集直接进行训练效果也还行。Cross 训练在人脸人体基本上能保持一个比较好的精度，也是我们实际业务中交付常用的模式。</p>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Det </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Dynamic-Checkpoint</title>
+      <link href="/2022/03/10/dynamic_checkpoint/"/>
+      <url>/2022/03/10/dynamic_checkpoint/</url>
+      
+        <content type="html"><![CDATA[<h1 id="DC-显存优化"><a href="#DC-显存优化" class="headerlink" title="DC 显存优化"></a>DC 显存优化</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>PyTorch Checkpoint 技术一直是我们在训练模型的时候常使用的一个显存优化的技术，但是这种技术一般都对于用户有一定的门槛，毕竟用户要自己手动去插入code 去进行设计开多少模块，同时如果网咯输入在不断的变化，我们每次都开启同样的Checkpoint 是没必要，通常会拖慢整体的训练速度。<br>应用场景如下</p><ul><li><p>多尺度训练, 输入可变化<br>对于多尺度训练，为了保证训练不爆显存，我们需要保证在最大尺度输入的时候有足够的显存供模型训练，所以如果是静态的Checkpoint，那训练的时候必须一致将比较多的模块进行Checkpoint。但是对于小尺度输入，训练显存是完全够用的，如果也开着Checkpoint 就会显著拖慢训练速度，因为需要在大尺度的训练时候开比较多的模块的Checkpoint，在小尺度的时候不开或者少开一些模块的Checkpoint。</p></li><li><p>输入不变化，模块比较多，需要人工设计</p></li></ul><p>这种场景也是同样的问题，假设我们只需要开启部分的Checkpoint模块就可以达到节省显存的要求，那么如何选取这些模块就是一个比较工程的问题，需要用户去每次不断的尝试，这样不仅费时费力，同时也不一定能选择最优的模块。</p><h2 id="原理介绍"><a href="#原理介绍" class="headerlink" title="原理介绍"></a>原理介绍</h2><ul><li>自动解析模型结构、插入Checkpoint</li></ul><p>要实现动态的Checkpoint 模块，首先得去除人工插入Checkpoint这个步骤，也就是我们通过code 和配置去自动解析我们的定义的模型，然后指定哪个模块需要进行Checkpoint （Wrapper 形式就可以做到）</p><ul><li>时间-显存 背包问题最优解</li></ul><p>因为我们要进行动态选取所有的模块是否进行Checkpoint，所以我们需要一个warmup 过程，统计每个模块他开启Checkpoint之后节省了多少显存，同时也需要记录他开启Checkpoint花费的时间。</p><h3 id="Stage-1-收集显存数据，约30-100-iters"><a href="#Stage-1-收集显存数据，约30-100-iters" class="headerlink" title="Stage 1 收集显存数据，约30-100 iters"></a>Stage 1 收集显存数据，约30-100 iters</h3><ul><li><p>before_forward: 记录当前input输入大小、显存占用，并重置pytorch显存统计数据；获得当前应该checkpoint的Module集合（默认是全部的Bottleneck、SwinTransformerBlock、Encoder等）</p></li><li><p>after_update：记录最大的显存占用，并计算出 model 从 forward 开始到 update 结束所需要的显存大小；</p></li></ul><h3 id="Stage-2-优化显存占用"><a href="#Stage-2-优化显存占用" class="headerlink" title="Stage 2 优化显存占用"></a>Stage 2 优化显存占用</h3><ul><li>before_forward：记录当前 input 输入大小，若 cache 中已有该 input 的优化plan，则直接应用该 plan；反之，则通过背包算法选取满足最小显存同时速度最少的 checkpoint module set，以此作为优化 plan 进行应用，并保存到 cache 中 </li><li>dc_cast_forward：查找当前 Module 是否在 checkpoint module set 中，若在，则执行 checkpoint forward；反之，则正常执行 forward</li></ul><h3 id="Up-里面样例展示"><a href="#Up-里面样例展示" class="headerlink" title="Up 里面样例展示"></a>Up 里面样例展示</h3><p><strong>config</strong> 展示</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hooks:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">memory_checkpoint</span></span><br><span class="line">    <span class="attr">kwargs:</span></span><br><span class="line">        <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">        <span class="attr">checkpoint_patterns:</span></span><br><span class="line">           <span class="attr">backbone:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">4</span> <span class="comment">#当resnet时设置为2</span></span><br><span class="line">           <span class="attr">neck:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">           <span class="attr">roi_head:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">              <span class="attr">share_weight_num:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">dc_cfg:</span></span><br><span class="line">           <span class="attr">warmup_iters:</span> <span class="number">30</span> <span class="comment">#控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确</span></span><br><span class="line">           <span class="attr">max_memory:</span> <span class="number">8</span> <span class="comment">#控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</span></span><br><span class="line">           <span class="attr">debug_freq:</span> <span class="number">10</span> <span class="comment">#打印信息的频率</span></span><br><span class="line">           <span class="attr">strategy:</span> <span class="string">greedy</span> <span class="comment"># memory_time or greedy #</span></span><br><span class="line"></span><br></pre></td></tr></table></figure><p><strong>warmup_iters</strong></p><ul><li>单位 iteration, 控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确。profiling也会消耗大量的时间，但是overhead 小于 warmup_iters * iter_time</li><li>如果是分类任务，显存占用没有变化，可以将warmup_iters调低，比如10。</li><li>如果是 input size - 显存占用关系比较明显的任务，比如提到的适用 task，则可以设为30左右。</li><li>如果是相同 input size 下也有较大的显存变化，那么理论上不适用该任务。如果使用 dynamic checkpoint，则需要将其设置更多的值。</li></ul><p><strong>max_memory</strong></p><ul><li>单位GB, 这部分为控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</li><li>当任务为输入固定的分类任务时，memory_threshold 可以调的更高。</li><li>如果任务为2 stage的目标检测任务，则需要调低 memory_threshold。因为该类任务显存在相同输入的情况下， 变化较大， 所以需要使用更加保守的设置。</li><li>如果任务执行过程中发生了 OOM，如果是显存碎片的影响，则需要调低 memory_threshold，如 1 GB 或 0.5 GB为单位；如果是backbone本身显存优化空间不足，那么可能需要替换其它方法进行优化。</li></ul><p><strong>debug_freq</strong></p><ul><li>在warmup_iters 后，输出优化schedule的iter频率</li></ul><p><strong>strategy</strong></p><ul><li>可选memory_time或者greedy</li><li>其他用户自定义的一些优化算法</li></ul>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 框架优化 </category>
+          
       </categories>
-      <tags>
-        <tag>Det</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Dynamic-Checkpoint</title>
-    <url>/2022/03/10/dynamic_checkpoint/</url>
-    <content><![CDATA[<h1 id="DC-显存优化"><a href="#DC-显存优化" class="headerlink" title="DC 显存优化"></a>DC 显存优化</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>PyTorch Checkpoint 技术一直是我们在训练模型的时候常使用的一个显存优化的技术，但是这种技术一般都对于用户有一定的门槛，毕竟用户要自己手动去插入code 去进行设计开多少模块，同时如果网咯输入在不断的变化，我们每次都开启同样的Checkpoint 是没必要，通常会拖慢整体的训练速度。<br>应用场景如下</p>
-<ul>
-<li><p>多尺度训练, 输入可变化<br>对于多尺度训练，为了保证训练不爆显存，我们需要保证在最大尺度输入的时候有足够的显存供模型训练，所以如果是静态的Checkpoint，那训练的时候必须一致将比较多的模块进行Checkpoint。但是对于小尺度输入，训练显存是完全够用的，如果也开着Checkpoint 就会显著拖慢训练速度，因为需要在大尺度的训练时候开比较多的模块的Checkpoint，在小尺度的时候不开或者少开一些模块的Checkpoint。</p>
-</li>
-<li><p>输入不变化，模块比较多，需要人工设计</p>
-</li>
-</ul>
-<p>这种场景也是同样的问题，假设我们只需要开启部分的Checkpoint模块就可以达到节省显存的要求，那么如何选取这些模块就是一个比较工程的问题，需要用户去每次不断的尝试，这样不仅费时费力，同时也不一定能选择最优的模块。</p>
-<h2 id="原理介绍"><a href="#原理介绍" class="headerlink" title="原理介绍"></a>原理介绍</h2><ul>
-<li>自动解析模型结构、插入Checkpoint</li>
-</ul>
-<p>要实现动态的Checkpoint 模块，首先得去除人工插入Checkpoint这个步骤，也就是我们通过code 和配置去自动解析我们的定义的模型，然后指定哪个模块需要进行Checkpoint （Wrapper 形式就可以做到）</p>
-<ul>
-<li>时间-显存 背包问题最优解</li>
-</ul>
-<p>因为我们要进行动态选取所有的模块是否进行Checkpoint，所以我们需要一个warmup 过程，统计每个模块他开启Checkpoint之后节省了多少显存，同时也需要记录他开启Checkpoint花费的时间。</p>
-<h3 id="Stage-1-收集显存数据，约30-100-iters"><a href="#Stage-1-收集显存数据，约30-100-iters" class="headerlink" title="Stage 1 收集显存数据，约30-100 iters"></a>Stage 1 收集显存数据，约30-100 iters</h3><ul>
-<li><p>before_forward: 记录当前input输入大小、显存占用，并重置pytorch显存统计数据；获得当前应该checkpoint的Module集合（默认是全部的Bottleneck、SwinTransformerBlock、Encoder等）</p>
-</li>
-<li><p>after_update：记录最大的显存占用，并计算出 model 从 forward 开始到 update 结束所需要的显存大小；</p>
-</li>
-</ul>
-<h3 id="Stage-2-优化显存占用"><a href="#Stage-2-优化显存占用" class="headerlink" title="Stage 2 优化显存占用"></a>Stage 2 优化显存占用</h3><ul>
-<li>before_forward：记录当前 input 输入大小，若 cache 中已有该 input 的优化plan，则直接应用该 plan；反之，则通过背包算法选取满足最小显存同时速度最少的 checkpoint module set，以此作为优化 plan 进行应用，并保存到 cache 中 </li>
-<li>dc_cast_forward：查找当前 Module 是否在 checkpoint module set 中，若在，则执行 checkpoint forward；反之，则正常执行 forward</li>
-</ul>
-<h3 id="Up-里面样例展示"><a href="#Up-里面样例展示" class="headerlink" title="Up 里面样例展示"></a>Up 里面样例展示</h3><p><strong>config</strong> 展示</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">hooks:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">memory_checkpoint</span></span><br><span class="line">    <span class="attr">kwargs:</span></span><br><span class="line">        <span class="attr">enable:</span> <span class="literal">True</span></span><br><span class="line">        <span class="attr">checkpoint_patterns:</span></span><br><span class="line">           <span class="attr">backbone:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">4</span> <span class="comment">#当resnet时设置为2</span></span><br><span class="line">           <span class="attr">neck:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">           <span class="attr">roi_head:</span></span><br><span class="line">              <span class="attr">patterns_mode:</span> <span class="string">level</span></span><br><span class="line">              <span class="attr">level:</span></span><br><span class="line">                <span class="attr">num:</span> <span class="number">1</span></span><br><span class="line">              <span class="attr">share_weight_num:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">dc_cfg:</span></span><br><span class="line">           <span class="attr">warmup_iters:</span> <span class="number">30</span> <span class="comment">#控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确</span></span><br><span class="line">           <span class="attr">max_memory:</span> <span class="number">8</span> <span class="comment">#控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</span></span><br><span class="line">           <span class="attr">debug_freq:</span> <span class="number">10</span> <span class="comment">#打印信息的频率</span></span><br><span class="line">           <span class="attr">strategy:</span> <span class="string">greedy</span> <span class="comment"># memory_time or greedy #</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>warmup_iters</strong></p>
-<ul>
-<li>单位 iteration, 控制profiling 模型显存占用的 iterations，设置的越多，收集到的显存占用信息也越多，预测模型也越准确。profiling也会消耗大量的时间，但是overhead 小于 warmup_iters * iter_time</li>
-<li>如果是分类任务，显存占用没有变化，可以将warmup_iters调低，比如10。</li>
-<li>如果是 input size - 显存占用关系比较明显的任务，比如提到的适用 task，则可以设为30左右。</li>
-<li>如果是相同 input size 下也有较大的显存变化，那么理论上不适用该任务。如果使用 dynamic checkpoint，则需要将其设置更多的值。</li>
-</ul>
-<p><strong>max_memory</strong></p>
-<ul>
-<li>单位GB, 这部分为控制DC的显存用量(torch.cuda.memory_allocated())(GB)上限</li>
-<li>当任务为输入固定的分类任务时，memory_threshold 可以调的更高。</li>
-<li>如果任务为2 stage的目标检测任务，则需要调低 memory_threshold。因为该类任务显存在相同输入的情况下， 变化较大， 所以需要使用更加保守的设置。</li>
-<li>如果任务执行过程中发生了 OOM，如果是显存碎片的影响，则需要调低 memory_threshold，如 1 GB 或 0.5 GB为单位；如果是backbone本身显存优化空间不足，那么可能需要替换其它方法进行优化。</li>
-</ul>
-<p><strong>debug_freq</strong></p>
-<ul>
-<li>在warmup_iters 后，输出优化schedule的iter频率</li>
-</ul>
-<p><strong>strategy</strong></p>
-<ul>
-<li>可选memory_time或者greedy</li>
-<li>其他用户自定义的一些优化算法</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> PyTorch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>United Perception</title>
+      <link href="/2022/01/01/unite_perception/"/>
+      <url>/2022/01/01/unite_perception/</url>
+      
+        <content type="html"><![CDATA[<h1 id="UP"><a href="#UP" class="headerlink" title="UP"></a>UP</h1><p><strong>背景</strong><br>为了方便用户生成不同的感知模型，不用多次熟悉不同的框架，我们开发了面向模型高效率、高质量生产的联合感知模型生产框架, 上线以来累计用户150+，调用了7w+。<a href="https://github.com/ModelTC/United-Perception">开源版本</a><br><strong>特性</strong></p><ul><li>全自动部署，一键部署到公司的部署平台ADELA</li><li>高精度的Baseline</li><li>提供多种模型提升的工具</li><li>业务code 和框架code 解耦</li></ul><h2 id="算法功能支持"><a href="#算法功能支持" class="headerlink" title="算法功能支持"></a>算法功能支持</h2><ul><li>算法层面<ul><li>检测</li><li>分类</li><li>分割</li><li>Keypoint</li><li>3d-pointpillar 系列</li><li>mono3d</li><li>自监督</li></ul></li><li>功能层面<ul><li>量化</li><li>蒸馏</li><li>稀疏（特定平台）</li><li>多任务训练</li><li>BigNas 神经网络搜索</li><li>动态Checkpoint</li><li>RankDataset</li><li>CrossDataset</li></ul></li></ul><h2 id="架构解析"><a href="#架构解析" class="headerlink" title="架构解析"></a>架构解析</h2><ul><li>UP<ul><li>Data<ul><li>dataset</li><li>sampler</li><li>reader</li><li>metrics</li></ul></li><li>Models<ul><li>backbone</li><li>neck</li><li>head</li><li>post-process</li><li>losses</li></ul></li><li>Extenstions</li><li>Runner<ul><li>base-runner</li><li>multitask</li><li>quant</li><li>kd</li></ul></li><li>Tasks<ul><li>Det</li><li>Cls</li><li>Seg</li><li>Kp</li><li>MultiTask</li><li>Distill</li><li>…</li></ul></li><li>comnands<ul><li>Train</li><li>Deploy</li><li>Test</li><li>…</li></ul></li><li>Utils<ul><li>model</li><li>env</li><li>general</li><li>deploy</li></ul></li></ul></li></ul><h2 id="开发模式"><a href="#开发模式" class="headerlink" title="开发模式"></a>开发模式</h2><p><strong>UP default tasks + plugins</strong></p><ul><li><p>UP main repo</p><ul><li>det</li><li>cls</li><li>seg</li><li>…</li></ul></li><li><p>Plugins</p><ul><li>face</li><li>struct-det</li><li>attribute</li><li>longtail-cls</li><li>…</li></ul></li><li><p>使用example</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">ROOT=up/path</span><br><span class="line">T=`date +%m%d%H%M`</span><br><span class="line">export ROOT=$ROOT</span><br><span class="line">cfg=$2</span><br><span class="line">export PLUGINPATH=your/plugin/path</span><br><span class="line">export DEFAULT_TASKS=cls</span><br><span class="line">export PYTHONPATH=$ROOT:$PYTHONPATH</span><br><span class="line">python -m up train \</span><br><span class="line">  --ng=$1 \</span><br><span class="line">  --launch=pytorch \</span><br><span class="line">  --config=$cfg \</span><br><span class="line">  --display=10 \</span><br><span class="line"><span class="meta prompt_">  2&gt;</span><span class="language-bash">&amp;1 | <span class="built_in">tee</span> log.train.<span class="variable">$T</span>.$(<span class="built_in">basename</span> <span class="variable">$cfg</span>)</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure></li></ul><h2 id="涵盖的业务"><a href="#涵盖的业务" class="headerlink" title="涵盖的业务"></a>涵盖的业务</h2><ul><li>facedet</li><li>struct-det</li><li>human attribute</li><li>car attribute</li><li>car keypoint</li><li>human keypoint</li><li>action</li><li>long-tail det</li><li>AD-Tlsr det</li><li>AD Uni Det</li><li>…</li></ul>]]></content>
+      
+      
       <categories>
-        <category>框架优化</category>
+          
+          <category> 框架优化 </category>
+          
       </categories>
-      <tags>
-        <tag>PyTorch</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FaceDet</title>
-    <url>/2019/03/10/facedet/</url>
-    <content><![CDATA[<h1 id="FaceDet"><a href="#FaceDet" class="headerlink" title="FaceDet"></a>FaceDet</h1><p>此前一直负责着公司内部人脸检测相关的内容，负责期间，构建了一套基础的训练和部署的Pipeline，整个业务交付有一个标准的模式。</p>
-<h2 id="整体的Pipeline"><a href="#整体的Pipeline" class="headerlink" title="整体的Pipeline"></a>整体的Pipeline</h2><ul>
-<li><p>数据部分</p>
-<ul>
-<li>数据采集<br>人脸、人体检测是一个常用的任务，会遇到各种各样的误报和漏检问题，大部分可以通过数据层面解决，面对一个新场景，大概率可能有少量的误报和漏检，只需要采集数量数据集即可。</li>
-<li>数据标注<br>标注员一般很少误标，但是偷懒漏标常有发生，构建了一套自动检查漏标的工具。<br>原理如下： 使用一个高质量的大模型，用此模型去获得标注图片的伪标签，同时用标注文件作为gt，然后计算得分最高的FP，然后进行可视化图片。比较严重的漏标会在这里被发现，循环几次，漏标即可大部分消除</li>
-<li>数据挖掘<br>为了提升整体模型的质量，需要不断用已有的模型去挖掘一些难样本的case<ul>
-<li>model diff</li>
-<li>scale diff</li>
-<li>视频的前后帧挖掘，难正样本和难负样本</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>模型训练部分<br>  此部分主要是不断引入外界训练trick，然后在保持推理速度不变的情况下提示精度</p>
-<ul>
-<li>obj 分支，用于mining 一些比较难的样本，训练的时候引入</li>
-<li>margin 用于增大正负样本的分界面</li>
-<li>stitch expand aug 用于提升模型在不同尺度的精度</li>
-</ul>
-</li>
-<li><p>模型部署部分</p>
-<ul>
-<li>构建自动化部署的pipeline，训练完一键打包到不同的平台</li>
-<li>NNie 平台特殊优化，nnie 平台反量化时间比较久，重新设计网络，加大网络，同时减少输出，大幅度提升精度</li>
-</ul>
-</li>
-</ul>
-<h2 id="负责的业务"><a href="#负责的业务" class="headerlink" title="负责的业务"></a>负责的业务</h2><ul>
-<li>人脸检测 9 系列交付，累积交付5个模型</li>
-<li>人脸人体检测，累积交付6个模型</li>
-<li>头肩检测，累积交付3个模型</li>
-<li>其他各类检测模型</li>
-<li>FaceDet 框架负责人</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> PyTorch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>MultiTask LongTail Uni</title>
+      <link href="/2021/10/10/multitask_longtail/"/>
+      <url>/2021/10/10/multitask_longtail/</url>
+      
+        <content type="html"><![CDATA[<h1 id="MultiTask-LongTail-Uni"><a href="#MultiTask-LongTail-Uni" class="headerlink" title="MultiTask LongTail Uni"></a>MultiTask LongTail Uni</h1><p>长尾问题一直是现实场景中比较困扰的问题，或者说在DL 这种数据驱动的场景下也是比较难以解决的问题，大量的特殊类别只有少量的可使用标签，在这里我们和下游团队共同提出了一种新的解决方案的范式，利用多任务训练和海量的数据进行表征训练，然后再下游任务进行迁移，然后整体的提升长尾类别的性能。</p><p>Uni 模型也是实际场景一个常用的需求，多个模型需要合并成一个模型输出，这样可以大幅度减少模型的处理耗时，我们针对自动驾驶的多个任务进行了任务尝试，利用CrossDataset 这种伪的多任务训练方式，帮助构建了一套完整的pipeline。</p><h2 id="多任务训练的框架层面设计"><a href="#多任务训练的框架层面设计" class="headerlink" title="多任务训练的框架层面设计"></a>多任务训练的框架层面设计</h2><p>我们这里用最原始的方式进行训练，共享Backbone 、Neck 部分，然后不同的任务用不同的head 进行训练。</p><ul><li>构建多个Dataloader 每个任务一个dataloader，因为设计大规模数据集训练，Det 是coco、oid、obj365 等等<br>分类是imagenet22k、分割是MSeg, 几个任务都属于数据量非常大，因此需要用到之前的 rankdataset 配合使用</li><li>多次forward 一次backward，每个任务一个loss weight，我们这里主体的任务是为了检测服务，所以检测的权重比较高，分类的权重比较低</li></ul><h2 id="算法层面设计-多stage-训练方式"><a href="#算法层面设计-多stage-训练方式" class="headerlink" title="算法层面设计-多stage 训练方式"></a>算法层面设计-多stage 训练方式</h2><ul><li><p>通用流程</p><ul><li>Stage1 通用表征训练，Det + Cls + Seg + 其他 基础视觉任务 联合训练，每个任务都用对应的高精度的Baseline</li><li>Stage2 下游检测数据domain 迁移<br>下游检测数据Det RPN + 分类数据 Cls 联合训练， 为了保持其对于下游任务的高召回率，同时又需要保证表征不丢失基础的分类能力</li><li>Stage3 Decouple 训练方式，Backbone 表征fix 住，下游head 进行Finetune</li></ul></li><li><p>细节</p><ul><li>此套流程分成2阶段Det 和一阶段Det算法，同时这个任务是一个长尾的任务，因此 Stage1 的基础表征训练非常重要，也就是基础的Baseline 要足够高，我们设计了一套长尾的loss + Aug 大幅度提升了整体的精度</li><li>学术LVIS 层面，我们针对检测任务标注毕竟难以获得，设计了一套Det + cls 的联合训练的pipepline，也是大幅度提升LVIS 的精度，当然后续也投稿了论文</li><li>此任务增加标签非常容易，间接的解决了增加cls 的问题，每次只需要增加一个head 的计算量</li><li>此任务可以动态的选择需要输出几个标签，因为不同标签对应着不同的head，在部署的时候可以随意组合。</li></ul></li></ul><h2 id="Uni-model"><a href="#Uni-model" class="headerlink" title="Uni-model"></a>Uni-model</h2><ul><li><p>合并的基础<br>输入是同一个图片，同时数据分布是同一个，同时他们没有直接的共同标注，可以用multitask 去做，但是稍显复杂，这里我们使用Cross 的训练思路，近似一个多任务训练，将自动驾驶的多个模型融合成一个模型，节省了大约一半的时间，同时精度得到了一定的提升。</p></li><li><p>Uni-Det</p><ul><li>CrossFocalLoss 为核心，task balance sampler 为辅助，平衡多个任务</li><li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li><li>不同任务离线合并成一个任务</li></ul></li><li><p>Uni-Cls</p><ul><li>类似属性训练，一个backbone 接多个head 同时支持多个图片属性</li><li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li><li>不同任务离线合并成一个任务</li></ul></li></ul>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>PyTorch</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hardware-Design</title>
-    <url>/2021/08/10/hardware_design_det/</url>
-    <content><![CDATA[<h1 id="End2end-软硬件协同优化"><a href="#End2end-软硬件协同优化" class="headerlink" title="End2end 软硬件协同优化"></a>End2end 软硬件协同优化</h1><p>对于如何生产一个高效的模型，这是一个非常经典的问题，通常学术上很少考虑如何end2end 去优化整个流程。</p>
-<h2 id="模型推理的整体流程"><a href="#模型推理的整体流程" class="headerlink" title="模型推理的整体流程"></a>模型推理的整体流程</h2><p><strong>通用的流程</strong></p>
-<ul>
-<li>pre-process<br> 标准的前处理模块，比如Resize、Norm 等等之类的</li>
-<li>cpu2device<br> 将我们的前处理数据变成硬件上跑的数据，通常还需要这一步，对于cuda 就是cpu2cuda （copy 操作）</li>
-<li>hardware-inference<br> 直接的硬件推理过程，可能是不同的类型，比如FP16，FP32, int8 等等</li>
-<li>device2cpu<br>硬件结果到我们的cpu 上，如果是int8 的话还会存在一个反量化的过程，也就是硬件跑出来的结果一般是量化后的，到cpu 上是需要是float 类型的，这里还涉及这个操作</li>
-<li>post-processs<br>后处理操作，根据原始的模型结果进行一定过滤或者人工设计的规则进行处理</li>
-</ul>
-<p><strong>当前的一些问题</strong></p>
-<p>模型的推理时间在不同的硬件平台或者在不同的任务上他可能瓶颈不一样，单纯的优化某一个模块并不是最优解，通常需要结合软件和硬件的一些特点进行设计算法。<br>一些例子</p>
-<ul>
-<li>某些平台cpu 比较弱，这里的stage1 就会比较慢</li>
-<li>某些平台硬件int 跑的很快，在反量化的步骤比较慢</li>
-<li>某些平台整体的网络运行部分非常快，后处理比较慢<br>这里都是我们在实际的应用中常常遇到的问题</li>
-</ul>
-<h2 id="案例介绍"><a href="#案例介绍" class="headerlink" title="案例介绍"></a>案例介绍</h2><h3 id="Low-Power-Computer-Vision-Contest-FPGA-First-Place"><a href="#Low-Power-Computer-Vision-Contest-FPGA-First-Place" class="headerlink" title="Low Power Computer Vision Contest FPGA First Place"></a>Low Power Computer Vision Contest FPGA First Place</h3><p>我们在这个算法竞赛就是通过整体的优化整个pipeline 提升整体的精度，考虑精度和latency 的均衡，以超越第二名3倍分数夺得第一名。竞赛是一个COCO 检测任务，最后的结果需要看FPGA 板子上跑的速度和精度算一个最终得分。</p>
-<ul>
-<li>前处理部分<br>对于检测任务来说，我们发现以往那些减均值除方差都是没必要，整个网络输入都使用的是灰度图（保持前处理Resize 速度快），前处理部分只有一个Resize 保留下来，同时这个尺度也是和后面的网络进行一起设计</li>
-<li>模型训练部分<ul>
-<li>算法优化层面，我们这里使用到了大规模数据pretrain, 外加模型蒸馏的方式，以及多种数据增强</li>
-<li>网络设计层面我们以实际硬件测速为准，去除不友好的算子（包含一些量化加速比比较低的算子），综合了尺度和模型大小</li>
-</ul>
-</li>
-<li>后处理部分，在不影响精度的情况下，尽量较少模型的输出 （FPGA 需要反量化，模型的输出越大，整体的耗时越久）同时也保证后处理的情况尽量简单</li>
-</ul>
-<h3 id="结构化检测（交通场景下的重要任务）"><a href="#结构化检测（交通场景下的重要任务）" class="headerlink" title="结构化检测（交通场景下的重要任务）"></a>结构化检测（交通场景下的重要任务）</h3><p>我们帮助下游团队，通过这种软硬件协同的思想，重新设计网络的pipeline，同时优化后处理算子，配合模型测速最后提升大量的精度的同时，保证了模型速度基本没有变化。</p>
-<ul>
-<li>模型设计部分<br>以往的模型的模型训练都是固定一个输入，然后不断的调整网络结构，也有nas 结构搜索针对于分辨率，但是一般只考虑flops这个级别，实际应用中，latency 测速才是比较准确的指标。 通过分析模型的指标在不同尺度下的recall，我们针对性的调整分辨率和网络结构，整体的提升了性能。</li>
-<li>后处理优化<br>首先通过实际PipeLine 测速，当我们的硬件推理速度越来越快的同时，后处理成为了新的瓶颈，占比越来越大。<br>通过分析其实大部分时间花费在拿网络原始的输出再到nms 等等需要多次起cuda kernel,<br>针对性我们将batch cls 这几个维度一起操作，每次生成 7 维数据 （b_idx, x1, y1, x2, y2, score, cls_indx）, 然后进行统一操作。显著提升整体的运行速度，4ms-&gt;1ms。</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Det </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hardware-Design</title>
+      <link href="/2021/08/10/hardware_design_det/"/>
+      <url>/2021/08/10/hardware_design_det/</url>
+      
+        <content type="html"><![CDATA[<h1 id="End2end-软硬件协同优化"><a href="#End2end-软硬件协同优化" class="headerlink" title="End2end 软硬件协同优化"></a>End2end 软硬件协同优化</h1><p>对于如何生产一个高效的模型，这是一个非常经典的问题，通常学术上很少考虑如何end2end 去优化整个流程。</p><h2 id="模型推理的整体流程"><a href="#模型推理的整体流程" class="headerlink" title="模型推理的整体流程"></a>模型推理的整体流程</h2><p><strong>通用的流程</strong></p><ul><li>pre-process<br> 标准的前处理模块，比如Resize、Norm 等等之类的</li><li>cpu2device<br> 将我们的前处理数据变成硬件上跑的数据，通常还需要这一步，对于cuda 就是cpu2cuda （copy 操作）</li><li>hardware-inference<br> 直接的硬件推理过程，可能是不同的类型，比如FP16，FP32, int8 等等</li><li>device2cpu<br>硬件结果到我们的cpu 上，如果是int8 的话还会存在一个反量化的过程，也就是硬件跑出来的结果一般是量化后的，到cpu 上是需要是float 类型的，这里还涉及这个操作</li><li>post-processs<br>后处理操作，根据原始的模型结果进行一定过滤或者人工设计的规则进行处理</li></ul><p><strong>当前的一些问题</strong></p><p>模型的推理时间在不同的硬件平台或者在不同的任务上他可能瓶颈不一样，单纯的优化某一个模块并不是最优解，通常需要结合软件和硬件的一些特点进行设计算法。<br>一些例子</p><ul><li>某些平台cpu 比较弱，这里的stage1 就会比较慢</li><li>某些平台硬件int 跑的很快，在反量化的步骤比较慢</li><li>某些平台整体的网络运行部分非常快，后处理比较慢<br>这里都是我们在实际的应用中常常遇到的问题</li></ul><h2 id="案例介绍"><a href="#案例介绍" class="headerlink" title="案例介绍"></a>案例介绍</h2><h3 id="Low-Power-Computer-Vision-Contest-FPGA-First-Place"><a href="#Low-Power-Computer-Vision-Contest-FPGA-First-Place" class="headerlink" title="Low Power Computer Vision Contest FPGA First Place"></a>Low Power Computer Vision Contest FPGA First Place</h3><p>我们在这个算法竞赛就是通过整体的优化整个pipeline 提升整体的精度，考虑精度和latency 的均衡，以超越第二名3倍分数夺得第一名。竞赛是一个COCO 检测任务，最后的结果需要看FPGA 板子上跑的速度和精度算一个最终得分。</p><ul><li>前处理部分<br>对于检测任务来说，我们发现以往那些减均值除方差都是没必要，整个网络输入都使用的是灰度图（保持前处理Resize 速度快），前处理部分只有一个Resize 保留下来，同时这个尺度也是和后面的网络进行一起设计</li><li>模型训练部分<ul><li>算法优化层面，我们这里使用到了大规模数据pretrain, 外加模型蒸馏的方式，以及多种数据增强</li><li>网络设计层面我们以实际硬件测速为准，去除不友好的算子（包含一些量化加速比比较低的算子），综合了尺度和模型大小</li></ul></li><li>后处理部分，在不影响精度的情况下，尽量较少模型的输出 （FPGA 需要反量化，模型的输出越大，整体的耗时越久）同时也保证后处理的情况尽量简单</li></ul><h3 id="结构化检测（交通场景下的重要任务）"><a href="#结构化检测（交通场景下的重要任务）" class="headerlink" title="结构化检测（交通场景下的重要任务）"></a>结构化检测（交通场景下的重要任务）</h3><p>我们帮助下游团队，通过这种软硬件协同的思想，重新设计网络的pipeline，同时优化后处理算子，配合模型测速最后提升大量的精度的同时，保证了模型速度基本没有变化。</p><ul><li>模型设计部分<br>以往的模型的模型训练都是固定一个输入，然后不断的调整网络结构，也有nas 结构搜索针对于分辨率，但是一般只考虑flops这个级别，实际应用中，latency 测速才是比较准确的指标。 通过分析模型的指标在不同尺度下的recall，我们针对性的调整分辨率和网络结构，整体的提升了性能。</li><li>后处理优化<br>首先通过实际PipeLine 测速，当我们的硬件推理速度越来越快的同时，后处理成为了新的瓶颈，占比越来越大。<br>通过分析其实大部分时间花费在拿网络原始的输出再到nms 等等需要多次起cuda kernel,<br>针对性我们将batch cls 这几个维度一起操作，每次生成 7 维数据 （b_idx, x1, y1, x2, y2, score, cls_indx）, 然后进行统一操作。显著提升整体的运行速度，4ms-&gt;1ms。</li></ul>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>Det</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MultiTask LongTail Uni</title>
-    <url>/2021/10/10/multitask_longtail/</url>
-    <content><![CDATA[<h1 id="MultiTask-LongTail-Uni"><a href="#MultiTask-LongTail-Uni" class="headerlink" title="MultiTask LongTail Uni"></a>MultiTask LongTail Uni</h1><p>长尾问题一直是现实场景中比较困扰的问题，或者说在DL 这种数据驱动的场景下也是比较难以解决的问题，大量的特殊类别只有少量的可使用标签，在这里我们和下游团队共同提出了一种新的解决方案的范式，利用多任务训练和海量的数据进行表征训练，然后再下游任务进行迁移，然后整体的提升长尾类别的性能。</p>
-<p>Uni 模型也是实际场景一个常用的需求，多个模型需要合并成一个模型输出，这样可以大幅度减少模型的处理耗时，我们针对自动驾驶的多个任务进行了任务尝试，利用CrossDataset 这种伪的多任务训练方式，帮助构建了一套完整的pipeline。</p>
-<h2 id="多任务训练的框架层面设计"><a href="#多任务训练的框架层面设计" class="headerlink" title="多任务训练的框架层面设计"></a>多任务训练的框架层面设计</h2><p>我们这里用最原始的方式进行训练，共享Backbone 、Neck 部分，然后不同的任务用不同的head 进行训练。</p>
-<ul>
-<li>构建多个Dataloader 每个任务一个dataloader，因为设计大规模数据集训练，Det 是coco、oid、obj365 等等<br>分类是imagenet22k、分割是MSeg, 几个任务都属于数据量非常大，因此需要用到之前的 rankdataset 配合使用</li>
-<li>多次forward 一次backward，每个任务一个loss weight，我们这里主体的任务是为了检测服务，所以检测的权重比较高，分类的权重比较低</li>
-</ul>
-<h2 id="算法层面设计-多stage-训练方式"><a href="#算法层面设计-多stage-训练方式" class="headerlink" title="算法层面设计-多stage 训练方式"></a>算法层面设计-多stage 训练方式</h2><ul>
-<li><p>通用流程</p>
-<ul>
-<li>Stage1 通用表征训练，Det + Cls + Seg + 其他 基础视觉任务 联合训练，每个任务都用对应的高精度的Baseline</li>
-<li>Stage2 下游检测数据domain 迁移<br>下游检测数据Det RPN + 分类数据 Cls 联合训练， 为了保持其对于下游任务的高召回率，同时又需要保证表征不丢失基础的分类能力</li>
-<li>Stage3 Decouple 训练方式，Backbone 表征fix 住，下游head 进行Finetune</li>
-</ul>
-</li>
-<li><p>细节</p>
-<ul>
-<li>此套流程分成2阶段Det 和一阶段Det算法，同时这个任务是一个长尾的任务，因此 Stage1 的基础表征训练非常重要，也就是基础的Baseline 要足够高，我们设计了一套长尾的loss + Aug 大幅度提升了整体的精度</li>
-<li>学术LVIS 层面，我们针对检测任务标注毕竟难以获得，设计了一套Det + cls 的联合训练的pipepline，也是大幅度提升LVIS 的精度，当然后续也投稿了论文</li>
-<li>此任务增加标签非常容易，间接的解决了增加cls 的问题，每次只需要增加一个head 的计算量</li>
-<li>此任务可以动态的选择需要输出几个标签，因为不同标签对应着不同的head，在部署的时候可以随意组合。</li>
-</ul>
-</li>
-</ul>
-<h2 id="Uni-model"><a href="#Uni-model" class="headerlink" title="Uni-model"></a>Uni-model</h2><ul>
-<li><p>合并的基础<br>输入是同一个图片，同时数据分布是同一个，同时他们没有直接的共同标注，可以用multitask 去做，但是稍显复杂，这里我们使用Cross 的训练思路，近似一个多任务训练，将自动驾驶的多个模型融合成一个模型，节省了大约一半的时间，同时精度得到了一定的提升。</p>
-</li>
-<li><p>Uni-Det</p>
-<ul>
-<li>CrossFocalLoss 为核心，task balance sampler 为辅助，平衡多个任务</li>
-<li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li>
-<li>不同任务离线合并成一个任务</li>
-</ul>
-</li>
-<li><p>Uni-Cls</p>
-<ul>
-<li>类似属性训练，一个backbone 接多个head 同时支持多个图片属性</li>
-<li>Decouple 训练，上游先训好通用的表征，下游再进行特定的任务FineTune</li>
-<li>不同任务离线合并成一个任务</li>
-</ul>
-</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Det </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>RankDataset</title>
+      <link href="/2020/12/30/rankdataset/"/>
+      <url>/2020/12/30/rankdataset/</url>
+      
+        <content type="html"><![CDATA[<h1 id="RankDataset：超大规模数据集加载利器"><a href="#RankDataset：超大规模数据集加载利器" class="headerlink" title="RankDataset：超大规模数据集加载利器"></a>RankDataset：超大规模数据集加载利器</h1><h2 id="问题阐述"><a href="#问题阐述" class="headerlink" title="问题阐述"></a>问题阐述</h2><p>小王是一名炼丹术士，某一天小王逛着arxiv的时候，突然眼前一亮，发现一篇很好的论文:CLIP，看着论文开源的github，小王撸起袖子，准备自己爬一批数据尝试训一下clip。经过N久之后，终于凑齐了4亿数据。 虽然没经过清洗，不过小王践行实践原则，准备先暴力开搞一下。小王使用了PyTorch框架，写完了build模型，把之前的Dataset拿过来抄了一下，写了个RandomSampler，用了官方的Dataloader，一切就绪之后，一份伪Code就写好了： (如果你不熟悉 Dataset和Sampler的具体含义，可以参考这里Dataset） 下图是一个简化后的加载示意图</p><ul><li>meta file 格式</li></ul><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">filename label</span> </span><br><span class="line">image1.jpg &quot;balabala&quot;</span><br><span class="line">image2.jpg &quot;balabala&quot;</span><br><span class="line">image3.jpg &quot;balabala&quot;</span><br></pre></td></tr></table></figure><ul><li>NaiveDataset</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">from</span> torch.utils.data.sampler <span class="keyword">import</span> Sampler</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NaiveDataset</span>(<span class="title class_ inherited__">Dataset</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        <span class="built_in">super</span>(NaiveDataset, self).__init__()</span><br><span class="line">        self.metas = self.parse(meta_file)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        metas = []</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(meta_file) <span class="keyword">as</span> f:</span><br><span class="line">            <span class="keyword">for</span> line <span class="keyword">in</span> f.readlines():</span><br><span class="line">                metas.append(line.strip())</span><br><span class="line">        <span class="keyword">return</span> metas</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.metas[idx]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.metas)</span><br></pre></td></tr></table></figure><ul><li>RandomSampler</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RandomSampler</span>(<span class="title class_ inherited__">Sampler</span>):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot;Samples elements randomly, without replacement.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        data_source (Dataset): dataset to sample from</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dataset</span>):</span><br><span class="line">        self.dataset = dataset</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">iter</span>(torch.randperm(<span class="built_in">len</span>(self.dataset)).tolist())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.dataset)</span><br></pre></td></tr></table></figure><ul><li>训练流程</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">dataset = NaiveDataset(<span class="string">&quot;/path/to/meta&quot;</span>)</span><br><span class="line">sampler = RandomSampler(datset)</span><br><span class="line">dataloader = DataLoader(</span><br><span class="line">            dataset=dataset,</span><br><span class="line">            batch_size=<span class="number">32</span>,</span><br><span class="line">            shuffle=<span class="literal">False</span>,</span><br><span class="line">            num_workers=<span class="number">4</span>,</span><br><span class="line">            sampler=sampler</span><br><span class="line">        )</span><br><span class="line">model = build_model()</span><br><span class="line"><span class="keyword">for</span> index, batch <span class="keyword">in</span> <span class="built_in">enumerate</span>(dataloader):</span><br><span class="line">    image, label = batch</span><br><span class="line">    output = model(image)</span><br><span class="line">    loss = criterion(output, label)</span><br><span class="line">    loss.backward()</span><br></pre></td></tr></table></figure><p>写完代码之后，小王美滋滋的准备开始训练了一下，先拿一个小训练集测试一下有没有bug，一番修改之后，看着逐渐收敛的网络，小王很开心，准备上大数据集了。 既然要训大数据量，那必然要上分布式训练，好在PyTorch的分布式训练比较容易，小王从表哥家借来了一个8GPU的挖矿机。准备使用world_size为8的分布式训练。 小王在原来的sampler基础上略加修改，就得到了一个新的sampler (分布式sampler，负责分发训练数据index给不同的卡)</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DistributedRandomSampler</span>(<span class="title class_ inherited__">Sampler</span>):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot;Samples elements randomly, without replacement.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        data_source (Dataset): dataset to sample from</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dataset, rank, world_size</span>):</span><br><span class="line">        self.dataset = dataset</span><br><span class="line">        self.world_size = world_size</span><br><span class="line">        self.rank = rank</span><br><span class="line">        self.num_samples = <span class="built_in">int</span>(math.ceil(<span class="built_in">len</span>(self.dataset) * <span class="number">1.0</span> / self.world_size))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        index_list = torch.randperm(<span class="built_in">len</span>(self.dataset)).tolist()</span><br><span class="line">        index_list = padding(<span class="built_in">len</span>(self.dataset), self.rank, self.world_size) <span class="comment">#padding函数保证index_list长度整除rank</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">iter</span>(index_list[self.rank * self.num_samples: (self.rank + <span class="number">1</span>) * self.num_samples])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.num_samples</span><br><span class="line"></span><br></pre></td></tr></table></figure><ul><li>原因分析</li></ul><p>通常来说我们为了保证训练高效，在分布式训练时我们都会开启多进程，每块卡单独一个进程。每个进程里面会存储一些基本的模型和优化器信息，当然也会存储我们训练metas信息。<br> 在原生的PyTorch 数据集加载过程中，我们的分布式sampler 负责给每块卡分发index，为了保证高效读取，每个进程都需要保存其所有的metas。 那么对于8卡任务也就是会有8 * metas 需要在内存里存放(实际考虑到dataloader 的worker 数量，这个实际占用量会更大)。<br> 当我们的metas信息比较大的时候，我们的内存就可能会出现溢出问题。<br> 之前没有训练过这个大的数据，这次数据量上来了，内存吃不下很正常。</p><h2 id="解决方案一"><a href="#解决方案一" class="headerlink" title="解决方案一"></a>解决方案一</h2><h3 id="server-方案"><a href="#server-方案" class="headerlink" title="server 方案"></a>server 方案</h3><p> 你现在一台机器上要load 8份数据，当然内存要爆了。我在家的时候都是开两台机器，一台专门用来读数据(称为server)，另一台专门用来训练(称为client)。<br> 然后训练的时候client每次取数据都从server获得数据，这样数据只需要在server存一份就够了。</p> <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ServerDataset</span>(<span class="title class_ inherited__">Dataset</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file, server_ip, server_port</span>):</span><br><span class="line">        <span class="built_in">super</span>(ServerDataset, self).__init__()</span><br><span class="line">        self.server_ip = server_ip</span><br><span class="line">        self.server_port = server_port</span><br><span class="line">        self.meta_num = get_meta_num(server_ip, server_port)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_meta</span>(<span class="params">self, idx</span>):</span><br><span class="line">        meta = requests.get(<span class="string">&#x27;http://&#123;&#125;:&#123;&#125;/get/&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(self.server_ip, self.server_port, idx), timeout=<span class="number">1000</span>).json()</span><br><span class="line">        <span class="keyword">return</span> meta</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.get_meta(idx)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.meta_num</span><br></pre></td></tr></table></figure><p> <strong>局限性</strong></p><p> 看起来蛮简单的，只是把原来的从内存读变成了从server网络读取。可是这样的训练效率怎么样呢？<br> “这种做法对于qps在1k以下还比较实用, 但是当训练的总batchsize 特别大的时候这种做法会有明显的瓶颈问题，受限于中心化的并发读取上限问题，因此此方法具有一定的局限性。”</p><h3 id="RankDataset"><a href="#RankDataset" class="headerlink" title="RankDataset"></a>RankDataset</h3><ul><li><p>原理分析<br>从原理出发，小王进行了一下计算，其实每张卡实际使用的数据量为 len(metas) &#x2F;&#x2F; world_size, 在一般的训练过程中为了访问方便，采用sampler 去划分不同的卡读取的index，每块卡还是会保留所有的meta信息，因此这样会导致前面的内存问题。 而实际上，我保存了1000的数据，实际只使用其中了125张，那位为什么要把所有的都存下来呢？为什么我不能只把我需要用到的数据读取进来呢？说干就干，小王设计了一下方案</p></li><li><p>切分流程</p></li></ul><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">                     Metas 切分过程, mini_epoch = 2, world_size = 8</span><br><span class="line"></span><br><span class="line">    mini_epoch_idx = 0                            mini_epoch_idx = 1</span><br><span class="line">---- ---- ---- ---- ---- ---- ---- ---- | ---- ---- ---- ---- ---- ---- ---- ---- </span><br><span class="line">rk0  rk1  rk2  rk3  rk4  rk5  rk6  rk7  | rk0  rk1  rk2  rk3  rk4  rk5  rk6  rk7 </span><br><span class="line"></span><br><span class="line">每次只加载 len(metas) // (world_size * mini_epoch) 这样我内存占用就会可以人为的进行调整</span><br></pre></td></tr></table></figure><p>基本就是这样了，这样内存就是满足了，可是还有一点，之前的sampler是针对整个数据集来进行的，这里要怎么做呢？略作思索，小王得出来结论：<br> 对于普通的dataloader，随机性一般由sampler进行控制，这里由于已经分rank进行加载meta信息，为了保证不同epoch 加载数据顺序保证随机性，每隔一个epoch需要重新分配一次每个 rank 的 meta 信息。 小王在此基础上写出了新的code。</p><ul><li>本地读取样例</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RankDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    实际流程</span></span><br><span class="line"><span class="string">    获取rank和world_size 信息 -&gt; 获取dataset长度 -&gt; 根据dataset长度产生随机indices -&gt;</span></span><br><span class="line"><span class="string">    给不同的rank 分配indices -&gt; 根据这些indices产生metas </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file, world_size, rank, seed</span>):</span><br><span class="line">        <span class="built_in">super</span>(RankDataset, self).__init__()</span><br><span class="line">        random.seed(seed)</span><br><span class="line">        np.random.seed(seed)</span><br><span class="line">        self.world_size = world_size</span><br><span class="line">        self.rank = rank</span><br><span class="line"></span><br><span class="line">        self.metas = self.parse(meta_file)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        dataset_size = self.get_dataset_size(meta_file)                                     <span class="comment"># 获取metafile的行数</span></span><br><span class="line">        local_rank_index = self.get_local_index(dataset_size, self.rank, self.world_size)   <span class="comment"># 根据world size和rank，获取当前epoch，当前rank需要训练的index。</span></span><br><span class="line">        self.metas = self.read_file(meta_file, local_rank_index)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.metas[idx]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.metas)</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>因为这里的dataset读取进来的数据已经是分片之后的了，对应的sampler只需要使用一开始的RandomSampler就可以:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">epoch_num = <span class="number">0</span></span><br><span class="line">dataset = RankDataset(<span class="string">&quot;/path/to/meta&quot;</span>, world_size, rank, seed=epoch_num)</span><br><span class="line">sampler = RandomSampler(datset)</span><br><span class="line">dataloader = DataLoader(</span><br><span class="line">            dataset=dataset,</span><br><span class="line">            batch_size=<span class="number">32</span>,</span><br><span class="line">            shuffle=<span class="literal">False</span>,</span><br><span class="line">            num_workers=<span class="number">4</span>,</span><br><span class="line">            sampler=sampler</span><br><span class="line">        )</span><br></pre></td></tr></table></figure><ul><li>特别注意</li></ul><p>由于每个epoch都要重新读取数据，因此每个epoch要重新build dataloader:</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> epoch_num <span class="keyword">in</span> <span class="built_in">range</span>(epoch_num):</span><br><span class="line"></span><br><span class="line">    dataset = RankDataset(<span class="string">&quot;/path/to/meta&quot;</span>, world_size, rank, seed=epoch_num)</span><br><span class="line">    sampler = RandomSampler(datset)</span><br><span class="line">    dataloader = DataLoader(</span><br><span class="line">                dataset=dataset,</span><br><span class="line">                batch_size=<span class="number">32</span>,</span><br><span class="line">                shuffle=<span class="literal">False</span>,</span><br><span class="line">                num_workers=<span class="number">4</span>,</span><br><span class="line">                sampler=sampler</span><br><span class="line">            )</span><br><span class="line"></span><br></pre></td></tr></table></figure><p>这样看起来每个epoch都要读取数据很麻烦，但是和4亿数据的训练时间相比，读取的时间便不算什么了。 不过这种方法是否合理呢，会不会影响精度？小王在不同任务上进行了实验，分类任务上用imagenet和imagenet22k数据集，检测任务上使用了Open-Image数据集，均发现没有精度的损失。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="对于一般的数据集"><a href="#对于一般的数据集" class="headerlink" title="对于一般的数据集"></a>对于一般的数据集</h4><ul><li>自己实现一个继承torch.data.Dataset类就可以，需要实现init,getitem,len三个函数；  </li><li>使用torch默认的RandomSampler即可满足一般的random shuffle需求</li><li>使用torch默认的dataloader就制定完成数据迭代器</li></ul><h4 id="使用分布式训练"><a href="#使用分布式训练" class="headerlink" title="使用分布式训练"></a>使用分布式训练</h4><ul><li>Dataset保持不变  </li><li>sampler进行修改，保证每个rank读到的index可以覆盖到整个dataset，并且每个rank读的数据要是等量的</li><li>dataloader保持不变</li></ul><h4 id="使用中心化server"><a href="#使用中心化server" class="headerlink" title="使用中心化server"></a>使用中心化server</h4><p>为了解决大数据量加载内存不够的问题，可以专门使用一个节点当做server，为训练集供给训练。好处是可以节省内存，坏处是麻烦，以及对网络带宽和qps有需求。</p><ul><li>Dataset进行修改，  getitem从内存读取数据改成向server发出请求，获得对应index的数据。</li><li>可以直接使用分布式的sampler</li><li>dataloader保持不变</li></ul><h4 id="RankDataset："><a href="#RankDataset：" class="headerlink" title="RankDataset："></a>RankDataset：</h4><p>从原理入手，在分布式的基础上，直接计算每个epoch当前rank需要训练的数据的index。好处是大量的节省内存，且不需要额外开server。坏处是每个epoch都需要重新build dataloader，但是当数据量大的时候这个时间是可以接受的。</p><ul><li>支持进一步切分数据集，分批去读取数据集。</li><li>Dataset进行修改：每个epoch先计算该rank需要使用的index，然后根据index获取meta_file对应行，加载到内存中。</li><li>改为torch默认的使用torch默认的RandomSampler即可满足一般的random。</li><li>dataloader保持不变，但是在训练过程中，每个epoch到要用不同的随机数重新build dataloader。</li></ul><p>最后我们来对比一下实际的内存优化效果。</p><table><thead><tr><th align="center">方案</th><th align="center">PyTorch 官方处理</th><th align="center">中心化Meta</th><th align="center">RankDataset</th></tr></thead><tbody><tr><td align="center">内存占用</td><td align="center">M</td><td align="center">0</td><td align="center">M &#x2F; world_size &#x2F; mini_epoch</td></tr><tr><td align="center">并发</td><td align="center">内存读取</td><td align="center">网络读取</td><td align="center">内存读取</td></tr></tbody></table>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 框架优化 </category>
+          
       </categories>
-      <tags>
-        <tag>Det</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RankDataset</title>
-    <url>/2020/12/30/rankdataset/</url>
-    <content><![CDATA[<h1 id="RankDataset：超大规模数据集加载利器"><a href="#RankDataset：超大规模数据集加载利器" class="headerlink" title="RankDataset：超大规模数据集加载利器"></a>RankDataset：超大规模数据集加载利器</h1><h2 id="问题阐述"><a href="#问题阐述" class="headerlink" title="问题阐述"></a>问题阐述</h2><p>小王是一名炼丹术士，某一天小王逛着arxiv的时候，突然眼前一亮，发现一篇很好的论文:CLIP，看着论文开源的github，小王撸起袖子，准备自己爬一批数据尝试训一下clip。经过N久之后，终于凑齐了4亿数据。 虽然没经过清洗，不过小王践行实践原则，准备先暴力开搞一下。小王使用了PyTorch框架，写完了build模型，把之前的Dataset拿过来抄了一下，写了个RandomSampler，用了官方的Dataloader，一切就绪之后，一份伪Code就写好了： (如果你不熟悉 Dataset和Sampler的具体含义，可以参考这里Dataset） 下图是一个简化后的加载示意图</p>
-<ul>
-<li>meta file 格式</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">filename label</span> </span><br><span class="line">image1.jpg &quot;balabala&quot;</span><br><span class="line">image2.jpg &quot;balabala&quot;</span><br><span class="line">image3.jpg &quot;balabala&quot;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>NaiveDataset</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> Dataset</span><br><span class="line"><span class="keyword">from</span> torch.utils.data <span class="keyword">import</span> DataLoader</span><br><span class="line"><span class="keyword">from</span> torch.utils.data.sampler <span class="keyword">import</span> Sampler</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NaiveDataset</span>(<span class="title class_ inherited__">Dataset</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        <span class="built_in">super</span>(NaiveDataset, self).__init__()</span><br><span class="line">        self.metas = self.parse(meta_file)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        metas = []</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(meta_file) <span class="keyword">as</span> f:</span><br><span class="line">            <span class="keyword">for</span> line <span class="keyword">in</span> f.readlines():</span><br><span class="line">                metas.append(line.strip())</span><br><span class="line">        <span class="keyword">return</span> metas</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.metas[idx]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.metas)</span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>RandomSampler</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RandomSampler</span>(<span class="title class_ inherited__">Sampler</span>):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot;Samples elements randomly, without replacement.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        data_source (Dataset): dataset to sample from</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dataset</span>):</span><br><span class="line">        self.dataset = dataset</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">iter</span>(torch.randperm(<span class="built_in">len</span>(self.dataset)).tolist())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.dataset)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>训练流程</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">dataset = NaiveDataset(<span class="string">&quot;/path/to/meta&quot;</span>)</span><br><span class="line">sampler = RandomSampler(datset)</span><br><span class="line">dataloader = DataLoader(</span><br><span class="line">            dataset=dataset,</span><br><span class="line">            batch_size=<span class="number">32</span>,</span><br><span class="line">            shuffle=<span class="literal">False</span>,</span><br><span class="line">            num_workers=<span class="number">4</span>,</span><br><span class="line">            sampler=sampler</span><br><span class="line">        )</span><br><span class="line">model = build_model()</span><br><span class="line"><span class="keyword">for</span> index, batch <span class="keyword">in</span> <span class="built_in">enumerate</span>(dataloader):</span><br><span class="line">    image, label = batch</span><br><span class="line">    output = model(image)</span><br><span class="line">    loss = criterion(output, label)</span><br><span class="line">    loss.backward()</span><br></pre></td></tr></table></figure>
-
-
-<p>写完代码之后，小王美滋滋的准备开始训练了一下，先拿一个小训练集测试一下有没有bug，一番修改之后，看着逐渐收敛的网络，小王很开心，准备上大数据集了。 既然要训大数据量，那必然要上分布式训练，好在PyTorch的分布式训练比较容易，小王从表哥家借来了一个8GPU的挖矿机。准备使用world_size为8的分布式训练。 小王在原来的sampler基础上略加修改，就得到了一个新的sampler (分布式sampler，负责分发训练数据index给不同的卡)</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DistributedRandomSampler</span>(<span class="title class_ inherited__">Sampler</span>):</span><br><span class="line">    <span class="string">r&quot;&quot;&quot;Samples elements randomly, without replacement.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Arguments:</span></span><br><span class="line"><span class="string">        data_source (Dataset): dataset to sample from</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, dataset, rank, world_size</span>):</span><br><span class="line">        self.dataset = dataset</span><br><span class="line">        self.world_size = world_size</span><br><span class="line">        self.rank = rank</span><br><span class="line">        self.num_samples = <span class="built_in">int</span>(math.ceil(<span class="built_in">len</span>(self.dataset) * <span class="number">1.0</span> / self.world_size))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__iter__</span>(<span class="params">self</span>):</span><br><span class="line">        index_list = torch.randperm(<span class="built_in">len</span>(self.dataset)).tolist()</span><br><span class="line">        index_list = padding(<span class="built_in">len</span>(self.dataset), self.rank, self.world_size) <span class="comment">#padding函数保证index_list长度整除rank</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">iter</span>(index_list[self.rank * self.num_samples: (self.rank + <span class="number">1</span>) * self.num_samples])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.num_samples</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<ul>
-<li>原因分析</li>
-</ul>
-<p>通常来说我们为了保证训练高效，在分布式训练时我们都会开启多进程，每块卡单独一个进程。每个进程里面会存储一些基本的模型和优化器信息，当然也会存储我们训练metas信息。<br> 在原生的PyTorch 数据集加载过程中，我们的分布式sampler 负责给每块卡分发index，为了保证高效读取，每个进程都需要保存其所有的metas。 那么对于8卡任务也就是会有8 * metas 需要在内存里存放(实际考虑到dataloader 的worker 数量，这个实际占用量会更大)。<br> 当我们的metas信息比较大的时候，我们的内存就可能会出现溢出问题。<br> 之前没有训练过这个大的数据，这次数据量上来了，内存吃不下很正常。</p>
-<h2 id="解决方案一"><a href="#解决方案一" class="headerlink" title="解决方案一"></a>解决方案一</h2><h3 id="server-方案"><a href="#server-方案" class="headerlink" title="server 方案"></a>server 方案</h3><p> 你现在一台机器上要load 8份数据，当然内存要爆了。我在家的时候都是开两台机器，一台专门用来读数据(称为server)，另一台专门用来训练(称为client)。<br> 然后训练的时候client每次取数据都从server获得数据，这样数据只需要在server存一份就够了。</p>
- <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ServerDataset</span>(<span class="title class_ inherited__">Dataset</span>):    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file, server_ip, server_port</span>):</span><br><span class="line">        <span class="built_in">super</span>(ServerDataset, self).__init__()</span><br><span class="line">        self.server_ip = server_ip</span><br><span class="line">        self.server_port = server_port</span><br><span class="line">        self.meta_num = get_meta_num(server_ip, server_port)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_meta</span>(<span class="params">self, idx</span>):</span><br><span class="line">        meta = requests.get(<span class="string">&#x27;http://&#123;&#125;:&#123;&#125;/get/&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(self.server_ip, self.server_port, idx), timeout=<span class="number">1000</span>).json()</span><br><span class="line">        <span class="keyword">return</span> meta</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.get_meta(idx)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.meta_num</span><br></pre></td></tr></table></figure>
-
-<p> <strong>局限性</strong></p>
-<p> 看起来蛮简单的，只是把原来的从内存读变成了从server网络读取。可是这样的训练效率怎么样呢？<br> “这种做法对于qps在1k以下还比较实用, 但是当训练的总batchsize 特别大的时候这种做法会有明显的瓶颈问题，受限于中心化的并发读取上限问题，因此此方法具有一定的局限性。”</p>
-<h3 id="RankDataset"><a href="#RankDataset" class="headerlink" title="RankDataset"></a>RankDataset</h3><ul>
-<li><p>原理分析<br>从原理出发，小王进行了一下计算，其实每张卡实际使用的数据量为 len(metas) &#x2F;&#x2F; world_size, 在一般的训练过程中为了访问方便，采用sampler 去划分不同的卡读取的index，每块卡还是会保留所有的meta信息，因此这样会导致前面的内存问题。 而实际上，我保存了1000的数据，实际只使用其中了125张，那位为什么要把所有的都存下来呢？为什么我不能只把我需要用到的数据读取进来呢？说干就干，小王设计了一下方案</p>
-</li>
-<li><p>切分流程</p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">                     Metas 切分过程, mini_epoch = 2, world_size = 8</span><br><span class="line"></span><br><span class="line">    mini_epoch_idx = 0                            mini_epoch_idx = 1</span><br><span class="line">---- ---- ---- ---- ---- ---- ---- ---- | ---- ---- ---- ---- ---- ---- ---- ---- </span><br><span class="line">rk0  rk1  rk2  rk3  rk4  rk5  rk6  rk7  | rk0  rk1  rk2  rk3  rk4  rk5  rk6  rk7 </span><br><span class="line"></span><br><span class="line">每次只加载 len(metas) // (world_size * mini_epoch) 这样我内存占用就会可以人为的进行调整</span><br></pre></td></tr></table></figure>
-
-<p>基本就是这样了，这样内存就是满足了，可是还有一点，之前的sampler是针对整个数据集来进行的，这里要怎么做呢？略作思索，小王得出来结论：<br> 对于普通的dataloader，随机性一般由sampler进行控制，这里由于已经分rank进行加载meta信息，为了保证不同epoch 加载数据顺序保证随机性，每隔一个epoch需要重新分配一次每个 rank 的 meta 信息。 小王在此基础上写出了新的code。</p>
-<ul>
-<li>本地读取样例</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RankDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    实际流程</span></span><br><span class="line"><span class="string">    获取rank和world_size 信息 -&gt; 获取dataset长度 -&gt; 根据dataset长度产生随机indices -&gt;</span></span><br><span class="line"><span class="string">    给不同的rank 分配indices -&gt; 根据这些indices产生metas </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, meta_file, world_size, rank, seed</span>):</span><br><span class="line">        <span class="built_in">super</span>(RankDataset, self).__init__()</span><br><span class="line">        random.seed(seed)</span><br><span class="line">        np.random.seed(seed)</span><br><span class="line">        self.world_size = world_size</span><br><span class="line">        self.rank = rank</span><br><span class="line"></span><br><span class="line">        self.metas = self.parse(meta_file)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parse</span>(<span class="params">self, meta_file</span>):</span><br><span class="line">        dataset_size = self.get_dataset_size(meta_file)                                     <span class="comment"># 获取metafile的行数</span></span><br><span class="line">        local_rank_index = self.get_local_index(dataset_size, self.rank, self.world_size)   <span class="comment"># 根据world size和rank，获取当前epoch，当前rank需要训练的index。</span></span><br><span class="line">        self.metas = self.read_file(meta_file, local_rank_index)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.metas[idx]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.metas)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>因为这里的dataset读取进来的数据已经是分片之后的了，对应的sampler只需要使用一开始的RandomSampler就可以:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">epoch_num = <span class="number">0</span></span><br><span class="line">dataset = RankDataset(<span class="string">&quot;/path/to/meta&quot;</span>, world_size, rank, seed=epoch_num)</span><br><span class="line">sampler = RandomSampler(datset)</span><br><span class="line">dataloader = DataLoader(</span><br><span class="line">            dataset=dataset,</span><br><span class="line">            batch_size=<span class="number">32</span>,</span><br><span class="line">            shuffle=<span class="literal">False</span>,</span><br><span class="line">            num_workers=<span class="number">4</span>,</span><br><span class="line">            sampler=sampler</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>特别注意</li>
-</ul>
-<p>由于每个epoch都要重新读取数据，因此每个epoch要重新build dataloader:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> epoch_num <span class="keyword">in</span> <span class="built_in">range</span>(epoch_num):</span><br><span class="line"></span><br><span class="line">    dataset = RankDataset(<span class="string">&quot;/path/to/meta&quot;</span>, world_size, rank, seed=epoch_num)</span><br><span class="line">    sampler = RandomSampler(datset)</span><br><span class="line">    dataloader = DataLoader(</span><br><span class="line">                dataset=dataset,</span><br><span class="line">                batch_size=<span class="number">32</span>,</span><br><span class="line">                shuffle=<span class="literal">False</span>,</span><br><span class="line">                num_workers=<span class="number">4</span>,</span><br><span class="line">                sampler=sampler</span><br><span class="line">            )</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这样看起来每个epoch都要读取数据很麻烦，但是和4亿数据的训练时间相比，读取的时间便不算什么了。 不过这种方法是否合理呢，会不会影响精度？小王在不同任务上进行了实验，分类任务上用imagenet和imagenet22k数据集，检测任务上使用了Open-Image数据集，均发现没有精度的损失。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="对于一般的数据集"><a href="#对于一般的数据集" class="headerlink" title="对于一般的数据集"></a>对于一般的数据集</h4><ul>
-<li>自己实现一个继承torch.data.Dataset类就可以，需要实现init,getitem,len三个函数；  </li>
-<li>使用torch默认的RandomSampler即可满足一般的random shuffle需求</li>
-<li>使用torch默认的dataloader就制定完成数据迭代器</li>
-</ul>
-<h4 id="使用分布式训练"><a href="#使用分布式训练" class="headerlink" title="使用分布式训练"></a>使用分布式训练</h4><ul>
-<li>Dataset保持不变  </li>
-<li>sampler进行修改，保证每个rank读到的index可以覆盖到整个dataset，并且每个rank读的数据要是等量的</li>
-<li>dataloader保持不变</li>
-</ul>
-<h4 id="使用中心化server"><a href="#使用中心化server" class="headerlink" title="使用中心化server"></a>使用中心化server</h4><p>为了解决大数据量加载内存不够的问题，可以专门使用一个节点当做server，为训练集供给训练。好处是可以节省内存，坏处是麻烦，以及对网络带宽和qps有需求。</p>
-<ul>
-<li>Dataset进行修改，  getitem从内存读取数据改成向server发出请求，获得对应index的数据。</li>
-<li>可以直接使用分布式的sampler</li>
-<li>dataloader保持不变</li>
-</ul>
-<h4 id="RankDataset："><a href="#RankDataset：" class="headerlink" title="RankDataset："></a>RankDataset：</h4><p>从原理入手，在分布式的基础上，直接计算每个epoch当前rank需要训练的数据的index。好处是大量的节省内存，且不需要额外开server。坏处是每个epoch都需要重新build dataloader，但是当数据量大的时候这个时间是可以接受的。</p>
-<ul>
-<li>支持进一步切分数据集，分批去读取数据集。</li>
-<li>Dataset进行修改：每个epoch先计算该rank需要使用的index，然后根据index获取meta_file对应行，加载到内存中。</li>
-<li>改为torch默认的使用torch默认的RandomSampler即可满足一般的random。</li>
-<li>dataloader保持不变，但是在训练过程中，每个epoch到要用不同的随机数重新build dataloader。</li>
-</ul>
-<p>最后我们来对比一下实际的内存优化效果。</p>
-<table>
-<thead>
-<tr>
-<th align="center">方案</th>
-<th align="center">PyTorch 官方处理</th>
-<th align="center">中心化Meta</th>
-<th align="center">RankDataset</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">内存占用</td>
-<td align="center">M</td>
-<td align="center">0</td>
-<td align="center">M &#x2F; world_size &#x2F; mini_epoch</td>
-</tr>
-<tr>
-<td align="center">并发</td>
-<td align="center">内存读取</td>
-<td align="center">网络读取</td>
-<td align="center">内存读取</td>
-</tr>
-</tbody></table>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> PyTorch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Bag-of-Tricks</title>
+      <link href="/2020/12/10/bagoftricks/"/>
+      <url>/2020/12/10/bagoftricks/</url>
+      
+        <content type="html"><![CDATA[<h1 id="RetinaNet-Bag-of-Tricks"><a href="#RetinaNet-Bag-of-Tricks" class="headerlink" title="RetinaNet Bag-of-Tricks"></a>RetinaNet Bag-of-Tricks</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>RetinaNet 系列的提升算法有很多，但是实际应用到业务的时候我总结了一些问题，并根据这些问题，针对性<br>弄了高精度的Baseline，方便下游用户快速出一个符合要求的模型。</p><ul><li>各个算法不是可以直接套用的，都需要改代码，然后进行1 + 1 的融合</li><li>各个算法的模块有一些并不是可部署的，不是很实用，用户不太能感知，需要踩坑</li><li>不同的场景数据生效的tricks 可能不太一样，需要用户可以从config 调整</li><li>用户需要一个高精度的baseline 作为基础的发版模型</li></ul><h3 id="baseline-提升方案"><a href="#baseline-提升方案" class="headerlink" title="baseline  提升方案"></a>baseline  提升方案</h3><p>Baseline setting resnet18-256-256 后面两个是FPN 和head的 通道</p><ul><li><p>Benchmark</p><ul><li>Baseline 35.0 (+0)<br> 这个是最基础的Baseline，训3x 的r18 的结果</li><li>stitch_expand + crop Aug 37.1（+ 2.1）<br> stitch expand 为早期在人脸检测上的aug，4 个自己的图拼在一起，随机进行一部分Crop</li><li>Giou 37.3 （+ 0.2）</li><li>Atss 38.3 (+ 1.0)</li><li>QFL 39.5 (+ 1.2)</li><li>Dynamic Normlizer 39.6 (+0.1)<br>  此任务在COCO上没有太大的作用，但是对于稳定训练有着比较好的作用，在普通的det 训练，都要除一个normalizer，这个数字一般是正样本的数量，但是在实际业务当中有很多纯背景的图片，这些是为了抑制误报，这种情况会导致loss 非常大，在某些情况下会导致nan。动态则是会根据loss 值算一个类似focal loss 的值</li><li>Neck Head Bn 40.4 (+0.8)<br>  因为Head 部分不同FPN 共享参数的原因，这里需要进行特殊适配，这里卷积参数需要共享，但是Bn的参数不能共享，因为不同FPN 的分布差距过于大，如果共享之后会导致训练精度正常，eval 的时候精度很低</li><li>L1 + Giou loss 40.6 (+0.2)</li><li>Deep stem 41.4 + (+0.8)<br>  此时一个通用的优化方式，将7 * 7 卷积替换成3 个3*3 的卷积，在损失轻微的速度之后，带来了比较好的精度提升</li><li>Mimic 42.1 + (+ 0.7)<br>  我们这里用的是最原始的蒸馏方式，直接蒸馏FPN 出来的特征层，直接使用L2 loss 即可</li></ul></li><li><p>后续发展</p><ul><li>后续yolo 系列更新的非常快，我们也从其中获取了一些有用的东西，比如一些aug，一些ota 的assign 策略，但是总体的pipeline 还是Retinanet 系列，原因是这个系列比较稳定</li><li>yolo 系列很多时候设计的是为了GPU 平台，同时csp 结构其实量化加速比不是特别高</li><li>Mosaic 这个aug 在coco数据集取得了巨大成功，但是我们发现在下游任务并不是很好，可能改变比较多的数据分布，因此我们一般在训表征的时候会引入这个aug</li><li>ema 和 iou branch 以及ota 这些也是陆陆续续加入这个系列，</li><li>其他部分和yolo 系列网络结构以及参数耦合的比较厉害，不能够直接引入。</li></ul></li><li><p>业务验证</p><ul><li>结构化检测 recall + 3</li><li>TLSR recall + 3</li><li>x 光检测 recall + 2</li><li>其他各类检测均有明显的提升</li></ul></li></ul>]]></content>
+      
+      
       <categories>
-        <category>框架优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>PyTorch</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Resume</title>
-    <url>/2022/12/02/resume/</url>
-    <content><![CDATA[<h1 id="基本情况"><a href="#基本情况" class="headerlink" title="基本情况"></a>基本情况</h1><h2 id="主要研究方向"><a href="#主要研究方向" class="headerlink" title="主要研究方向"></a>主要研究方向</h2><p>Computer Vision, Deep Learning, Face Detection, Object Detection, Data Imbalanced Learning</p>
-<h2 id="教育背景"><a href="#教育背景" class="headerlink" title="教育背景"></a>教育背景</h2><ul>
-<li>北京邮电大学, 电子与通信工程, 硕士 2017.9 - 2020.6<br>获得北京市优秀毕业生称号，本科保研、研究生期间获得 2018 年国家奖学金</li>
-<li>北京邮电大学, 电子科学与技术, 学士 2013.9 - 2017.6</li>
-</ul>
-<h2 id="论文著作"><a href="#论文著作" class="headerlink" title="论文著作"></a>论文著作</h2><ul>
-<li>Shifeng Zhang, Cheng Chi, Yongqiang Yao, Zhen Lei, Stan Z Li; Bridging the gap between anchor-based and anchor-free detection via adaptive training sample selection &#x2F;&#x2F; Proceedings of the IEEE&#x2F;CVF conference on computer vision and pattern recognition. 2020: 9759-9768. <strong>best paper 提名</strong></li>
-<li>Bo Li, Yongqiang Yao, Jingru Tan, Gang Zhang, Fengwei Yu, Jianwei Lu, Ye Luo; Equalized focal loss for dense long-tailed object detection &#x2F;&#x2F; Proceedings of the IEEE&#x2F;CVF Conference on Computer Vision and Pattern Recognition. 2022: 6990-6999. <strong>公一</strong></li>
-<li>Jingru Tan, Bo Li, Xin Lu, Yongqiang Yao, Fengwei Yu, Tong He, Wanli Ouyang. The Equalization Losses:</li>
-<li>Gradient-Driven Training for Long-tailed Object Recognition &#x2F;&#x2F; arXiv preprint arXiv:2210.05566. 2022. <strong>TPMAI、通讯作者</strong></li>
-<li>Bo Li, Yongqiang Yao, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning &#x2F;&#x2F; arXiv preprint arXiv:2210.05568 <strong>公一 TMM 在投</strong></li>
-<li>Yongqiang Yao, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; Cross-dataset training for class increasing object detection &#x2F;&#x2F; arXiv preprint arXiv:2001.04621.</li>
-<li>Yongqiang Yao, Yuan Dong, Zesang Huang, Hongliang Bai. Dense receptive field for object detection &#x2F;&#x2F; 2018 24th International Conference on Pattern Recognition (ICPR). 2018.</li>
-<li>Weitao Feng, Lei Bai, Yongqiang Yao, Fengwei Yu, Wanli Ouyang. Towards Frame Rate Agnostic Multi-Object Tracking  <strong>IJCV</strong></li>
-<li>Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, Yongqiang Yao, Tianzi Xiaotian,Fengwei Yu, Xianglong Liu. SysNoise: Exploring and Benchmarking Training-Deployment System Inconsis-tency &#x2F;&#x2F; MLSys2013</li>
-</ul>
-<h2 id="工作经历"><a href="#工作经历" class="headerlink" title="工作经历"></a>工作经历</h2><h3 id="上海市商汤智能科技有限公司-高级算法研究员（5-正式-2-实习生）-2023-03-至今"><a href="#上海市商汤智能科技有限公司-高级算法研究员（5-正式-2-实习生）-2023-03-至今" class="headerlink" title="上海市商汤智能科技有限公司, 高级算法研究员（5 正式 2 实习生） 2023.03- 至今"></a>上海市商汤智能科技有限公司, 高级算法研究员（5 正式 2 实习生） 2023.03- 至今</h3><ul>
-<li>LLM 大模型SFT训练框架负责人<ul>
-<li>提供大模型训练的基础框架，基于Megatron-Deepspeed 重构，EasyLLM (8月将release code)</li>
-<li>LLM finetune 算法调研，商汤商量finetune API 后台服务提供者</li>
-</ul>
-</li>
-<li>明眸辅助标注算法负责人<ul>
-<li>负责自动驾驶相关大模型辅助标注相关探索，节省标注的成本。</li>
-</ul>
-</li>
-</ul>
-<h3 id="上海市商汤智能科技有限公司-高级算法研究员（5-正式-3-实习生）-2022-06-至今"><a href="#上海市商汤智能科技有限公司-高级算法研究员（5-正式-3-实习生）-2022-06-至今" class="headerlink" title="上海市商汤智能科技有限公司, 高级算法研究员（5 正式 3 实习生） 2022.06 - 至今"></a>上海市商汤智能科技有限公司, 高级算法研究员（5 正式 3 实习生） 2022.06 - 至今</h3><ul>
-<li>联合感知模型生产框架负责人<ul>
-<li>功能介绍<ul>
-<li>上线以来，累计用户 150+，调用量 7w+。</li>
-<li>框架算法支持分类、检测、分割、关键点、3d 点云 point-pillar 系列、mono3d 系列等可部署算<br>法；</li>
-<li>框架算法涵盖下游业务: 人脸、人体、头肩、结构化、工业、各类检测任务；人体属性、车辆<br>属性；人体关键点，车辆关键点；分类业务；车路协同路端 mono3d 和点云算法；</li>
-<li>框架支持神经网络搜索、模型蒸馏、在线量化、特定平台稀疏训练等各类模型精度提升工具。</li>
-<li>超大规模数据集训练支持，解决了超大规模数据集加载的内存溢出问题，支持公司内部 Clip<br>训练。</li>
-<li>跨数据集训练支持，支持不同标签空间的多个数据集混合训练，支持公司人脸人体业务训练。</li>
-<li>多任务训练支持，支持不同的任务进行混合训练，支持检测、分类、分割等多个任务一起进<br>行混合训练。</li>
-<li>动态 Checkpoint 技术，动态的选择最优的 checkpoint 模块进行更快速的模型训练。</li>
-</ul>
-</li>
-<li>业务支持<ul>
-<li>构建自动驾驶 TLSR 检测多模型融合方案，实现了 3 个检测模型合成一个的方案，在基本保<br>持单任务训练精度的同时，大幅度提升整体的推理速度。2022.6-2022.8</li>
-<li>构建自动驾驶分类多模型融合方案，实现了 3 个检测模型合成一个的方案，在基本保持单任务训练精度的同时，大幅度提升整体的推理速度。2022.6-2022.8</li>
-<li>智慧城市结构化检测软硬件协同精度提升；联合硬件测速、配合检测经验大规模的设计网络空间，重新分配分辨率和模型的大小，大幅度提升模型的精度，重新设计的网络在 latency 降低 1ms 的同时，精度提升 4 个点。2022.4-2022.9</li>
-<li>GPU 平台检测后处理优化；分析了高算力平台 latency 瓶颈，合并 batch、类别等多个维度后处理，压缩后处理时间至 1ms 以内，提速后处理 4 倍。2022.8-2022.9</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="上海市商汤智能科技有限公司-计算机视觉研究员（1-正式-3-实习生）-2020-6-2022-5"><a href="#上海市商汤智能科技有限公司-计算机视觉研究员（1-正式-3-实习生）-2020-6-2022-5" class="headerlink" title="上海市商汤智能科技有限公司, 计算机视觉研究员（1 正式 3 实习生） 2020.6 - 2022.5"></a>上海市商汤智能科技有限公司, 计算机视觉研究员（1 正式 3 实习生） 2020.6 - 2022.5</h3><ul>
-<li>工业级目标检测框架负责人<ul>
-<li>自 2018 年上线以来，累计用户 300+，累计调用量 20w+，交付业务模型 2000+，完备的模型生产流程。</li>
-<li>支持了公司内部的人脸检测、结构化检测、自动驾驶 2D PVB 检测、工业检测等各类检测任务的全生命生产流程。</li>
-<li>长尾基础模型提升, 和下游团队一起设计城市级安防产品线的通用目标检测、通用场景分割任务设计了“上游”目标检测 + 语义分割 + 物体分类的 MultiTasking 预训练框架，“中游”基于 camera差异及任务差异的域适应框架，“下游”多分支独立标签、消解竞争关系的检测分割框架；</li>
-<li>检测基础模型精度提升，提出针对 RetinaNet 系列的高精度 Baseline （2020 年底提出），Resnet18为 backbone 达到 42 mAP。</li>
-<li>智慧城市长尾基模型提升；智慧城市下的长尾问题面临着类别多，数据量少的问题，需要通过大规模检测数据进行 pretrain，提供了一个非常高的检测 Baseline 以及长尾算法去整体的提升模型的精度。在二阶段和一阶段 pretrain 模型均有 6 个点提升，下游任务有 3 个点的提升，以上指标均为 <a href="mailto:&#x46;&#x50;&#80;&#x49;&#64;&#x30;&#x2e;&#x31;">&#x46;&#x50;&#80;&#x49;&#64;&#x30;&#x2e;&#x31;</a> 对应的 recall 2021.4-2021.9</li>
-<li>研究院 x-光安防检测、工业检测等各类通用检测任务提升，平均精度提升 3 个点。2021.4-2021.9</li>
-<li>超大规模数据集训练支持，解决了超大规模数据集加载的内存溢出问题，支持公司内部 Clip 训练, 帮助人脸检测，结构化检测解决了内存溢出问题。</li>
-<li><ul>
-<li>自动驾驶 TLSR 模型提升；在原始的 FCOS 基础上，换用我们最新提供的高精度 Baseline 提升精度 3 个点. 2021.4-2021.9</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="北京市商汤科技开发有限公司-见习计算机视觉研究员-2018-10-2020-6"><a href="#北京市商汤科技开发有限公司-见习计算机视觉研究员-2018-10-2020-6" class="headerlink" title="北京市商汤科技开发有限公司, 见习计算机视觉研究员 2018.10 - 2020.6"></a>北京市商汤科技开发有限公司, 见习计算机视觉研究员 2018.10 - 2020.6</h3><ul>
-<li>独立负责公司内部人脸检测、人脸人体检测、头肩检测等各类检测任务 2018.10 - 2020.1<ul>
-<li>在负责人脸检测期间、独立负责多个系列的模型交付，解决了大量的人脸检测问题，累计提升 5个点。2018.10 - 2020.6</li>
-<li>独立开发出人脸人体混合训练方案，解决了混合数据集带来的标签混淆问题 2019.1 -2019.6</li>
-<li>独立负责公司内部人脸检测框架 FaceDet 开发和维护、构建了一套从训练到部署到数据回流的 Pipeline</li>
-</ul>
-</li>
-</ul>
-<h3 id="北京市飞搜科技开发有限公司-见习计算机视觉研究员-2016-10-2018-10"><a href="#北京市飞搜科技开发有限公司-见习计算机视觉研究员-2016-10-2018-10" class="headerlink" title="北京市飞搜科技开发有限公司, 见习计算机视觉研究员 2016.10 - 2018.10"></a>北京市飞搜科技开发有限公司, 见习计算机视觉研究员 2016.10 - 2018.10</h3><ul>
-<li>独立负责公司内部后端云服务开发 2016.7 - 2017.8</li>
-<li>独立负责公司内部结构化目标检测模型训练和 SDK 编写 2017.8 - 2018.10</li>
-</ul>
-<h2 id="荣誉奖项"><a href="#荣誉奖项" class="headerlink" title="荣誉奖项"></a>荣誉奖项</h2><ul>
-<li><p>算法竞赛</p>
-<ul>
-<li>Low Power Computer Vision Contest FPGA First Place 2021.8</li>
-<li>Low Power Computer Vision Contest Tracking Honorable Mention 2021.8</li>
-<li>2020 年全国水下机器人-水下目标检测算法赛 (光学赛道) 二等奖 2020.8</li>
-</ul>
-</li>
-<li><p>企业荣誉</p>
-<ul>
-<li>商汤团队奖 - 超大模型和通用模型团队 2022.01</li>
-<li>商汤优秀团队奖 - 模型工具链团队 2022.01</li>
-<li>商汤科技 - 最受欢迎开源项目（内部）二等奖 2022.01</li>
-<li>商汤科技 - 杰出员工奖 2023.01</li>
-</ul>
-</li>
-<li><p>其他</p>
-<ul>
-<li>Practical AI Challenge at AAAI 2023 主办人之一、负责赛题设计 2022.12</li>
-<li>UP 开源 repo <a href="https://github.com/ModelTC/United-Perception">https://github.com/ModelTC/United-Perception</a> 2022.6</li>
-<li>个人 github <a href="https://github.com/yqyao">https://github.com/yqyao</a> 2022.12, 累计star 900+</li>
-<li>连续3年在公司内部晋升</li>
-</ul>
-</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Det </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CrossDataset</title>
+      <link href="/2019/03/10/crossdataset/"/>
+      <url>/2019/03/10/crossdataset/</url>
+      
+        <content type="html"><![CDATA[<h1 id="CrossDataset-跨数据集训练"><a href="#CrossDataset-跨数据集训练" class="headerlink" title="CrossDataset 跨数据集训练"></a>CrossDataset 跨数据集训练</h1><h2 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h2><p>在实际生产环境中，因为历史原因，有各种不同标签的数据集，比如公司里面比较典型人脸和人体的数据集，在早起的时候很多数据只标注了其中的某一个类，所以导致有很多数据他虽然都是同一个场景，但是他只标注了其中一部分标签，而在后续的这种需求当中，统一的模型越来越重要，因为速度层面的要求越来越，而不同数据源因为没有共同标注，所以会存一个类别混淆问题。</p><h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>对于一个检测任务来说，我们以2个数据集A、B为例, 来解释这种问题的原因。 在检测训练我们要区分样本的正负属性，对于A 数据集来说， A+, A- 分布表示A 中的正负样本，B+，B- 分布表示B 中的正负样本。对于某一个数据集来说，他们的样本正负属性是已知的，对于跨数据集来说，某个样本属性对于其他数据集是未知的，这个就带来了类别混淆问题。<br>A+ 对于B 来说，有可能是B+ 也有可能是B-, 这种会对于训练造成一定的噪声。</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="半监督的解决方案"><a href="#半监督的解决方案" class="headerlink" title="半监督的解决方案"></a>半监督的解决方案</h3><ul><li><p>方案<br>分布训不同数据集的大模型，然后对于不是本数据集的数据进行伪标签标注，给不同的数据集打上统一的标签。</p></li><li><p>优点<br>充分利用了不同数据集的样本数据，通过伪标签的形式统一了标签空间。</p></li><li><p>缺点<br>需要多次训练不同数据源的大模型，而且不同数据源生成的伪标签质量不能保证，会带来一些额外的噪声</p></li></ul><h3 id="Cross-训练"><a href="#Cross-训练" class="headerlink" title="Cross 训练"></a>Cross 训练</h3><ul><li>方案<br>假设每个数据集它都能已经比较好的收敛了，对于此标签任务来说，目前的数据集已经可以提供比较多的样本数据进行训练，其他数据源的数据没有起到决定性作用。<br>我们在训练的时候，可以将这个任务当做一个伪 multitask任务来训练，将不同类别的训练和数据集进行绑定，让他们训练对应的类别数据时不产生干扰。</li></ul><p><strong>具体做法如下</strong><br>我们首先给不同的数据集的负样本一个特殊标签，用于标定负样本来自哪个数据集，因为正样本这个属性对于不同数据集他是共享的，也是已知的，A+ 一定是B-, 这个是已知确定的，可以正常参与训练，我们只需要控制B- 不作为 A- 既可。在训练的时候每个数据集对应的类别只会使用到对应的数据的负样本 和所有正样本，其他数据集的负样本在计算loss的时候均被忽略，这里保证整个训练近似是一个multitask的任务，只有head 部分是不共享的。</p><ul><li><p>优点<br>训练完全没有噪声，所有的标签都是已知的，不存在任何不确定的标签，整个训练比较稳定，能够相对不同的任务独立。</p></li><li><p>缺点<br>没有充分利用其他数据集的数据，浪费了一些已有数据</p></li></ul><h3 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h3><p>半监督方式非常依赖大模型的正确性，而且在面对增长的数据集问题比较无力，每次新增一个数据集（多一些类别）可能之前所有的数据集都要进行伪标签标注，成本比较高，效果也一般般，<br>我们在人脸人体这种存在大量的混淆样本上，这种伪标签的形式基本效果比较差，在一些共同标注比较少的数据集直接进行训练效果也还行。Cross 训练在人脸人体基本上能保持一个比较好的精度，也是我们实际业务中交付常用的模式。</p>]]></content>
+      
+      
       <categories>
-        <category>算法优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>Det</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>United Perception</title>
-    <url>/2022/01/01/unite_perception/</url>
-    <content><![CDATA[<h1 id="UP"><a href="#UP" class="headerlink" title="UP"></a>UP</h1><p><strong>背景</strong><br>为了方便用户生成不同的感知模型，不用多次熟悉不同的框架，我们开发了面向模型高效率、高质量生产的联合感知模型生产框架, 上线以来累计用户150+，调用了7w+。<a href="https://github.com/ModelTC/United-Perception">开源版本</a><br><strong>特性</strong></p>
-<ul>
-<li>全自动部署，一键部署到公司的部署平台ADELA</li>
-<li>高精度的Baseline</li>
-<li>提供多种模型提升的工具</li>
-<li>业务code 和框架code 解耦</li>
-</ul>
-<h2 id="算法功能支持"><a href="#算法功能支持" class="headerlink" title="算法功能支持"></a>算法功能支持</h2><ul>
-<li>算法层面<ul>
-<li>检测</li>
-<li>分类</li>
-<li>分割</li>
-<li>Keypoint</li>
-<li>3d-pointpillar 系列</li>
-<li>mono3d</li>
-<li>自监督</li>
-</ul>
-</li>
-<li>功能层面<ul>
-<li>量化</li>
-<li>蒸馏</li>
-<li>稀疏（特定平台）</li>
-<li>多任务训练</li>
-<li>BigNas 神经网络搜索</li>
-<li>动态Checkpoint</li>
-<li>RankDataset</li>
-<li>CrossDataset</li>
-</ul>
-</li>
-</ul>
-<h2 id="架构解析"><a href="#架构解析" class="headerlink" title="架构解析"></a>架构解析</h2><ul>
-<li>UP<ul>
-<li>Data<ul>
-<li>dataset</li>
-<li>sampler</li>
-<li>reader</li>
-<li>metrics</li>
-</ul>
-</li>
-<li>Models<ul>
-<li>backbone</li>
-<li>neck</li>
-<li>head</li>
-<li>post-process</li>
-<li>losses</li>
-</ul>
-</li>
-<li>Extenstions</li>
-<li>Runner<ul>
-<li>base-runner</li>
-<li>multitask</li>
-<li>quant</li>
-<li>kd</li>
-</ul>
-</li>
-<li>Tasks<ul>
-<li>Det</li>
-<li>Cls</li>
-<li>Seg</li>
-<li>Kp</li>
-<li>MultiTask</li>
-<li>Distill</li>
-<li>…</li>
-</ul>
-</li>
-<li>comnands<ul>
-<li>Train</li>
-<li>Deploy</li>
-<li>Test</li>
-<li>…</li>
-</ul>
-</li>
-<li>Utils<ul>
-<li>model</li>
-<li>env</li>
-<li>general</li>
-<li>deploy</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="开发模式"><a href="#开发模式" class="headerlink" title="开发模式"></a>开发模式</h2><p><strong>UP default tasks + plugins</strong></p>
-<ul>
-<li><p>UP main repo</p>
-<ul>
-<li>det</li>
-<li>cls</li>
-<li>seg</li>
-<li>…</li>
-</ul>
-</li>
-<li><p>Plugins</p>
-<ul>
-<li>face</li>
-<li>struct-det</li>
-<li>attribute</li>
-<li>longtail-cls</li>
-<li>…</li>
-</ul>
-</li>
-<li><p>使用example</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ROOT=up/path</span><br><span class="line">T=`date +%m%d%H%M`</span><br><span class="line">export ROOT=$ROOT</span><br><span class="line">cfg=$2</span><br><span class="line">export PLUGINPATH=your/plugin/path</span><br><span class="line">export DEFAULT_TASKS=cls</span><br><span class="line">export PYTHONPATH=$ROOT:$PYTHONPATH</span><br><span class="line">python -m up train \</span><br><span class="line">  --ng=$1 \</span><br><span class="line">  --launch=pytorch \</span><br><span class="line">  --config=$cfg \</span><br><span class="line">  --display=10 \</span><br><span class="line"><span class="meta prompt_">  2&gt;</span><span class="language-bash">&amp;1 | <span class="built_in">tee</span> log.train.<span class="variable">$T</span>.$(<span class="built_in">basename</span> <span class="variable">$cfg</span>)</span> </span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="涵盖的业务"><a href="#涵盖的业务" class="headerlink" title="涵盖的业务"></a>涵盖的业务</h2><ul>
-<li>facedet</li>
-<li>struct-det</li>
-<li>human attribute</li>
-<li>car attribute</li>
-<li>car keypoint</li>
-<li>human keypoint</li>
-<li>action</li>
-<li>long-tail det</li>
-<li>AD-Tlsr det</li>
-<li>AD Uni Det</li>
-<li>…</li>
-</ul>
-]]></content>
+      
+      
+        <tags>
+            
+            <tag> Det </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>FaceDet</title>
+      <link href="/2019/03/10/facedet/"/>
+      <url>/2019/03/10/facedet/</url>
+      
+        <content type="html"><![CDATA[<h1 id="FaceDet"><a href="#FaceDet" class="headerlink" title="FaceDet"></a>FaceDet</h1><p>此前一直负责着公司内部人脸检测相关的内容，负责期间，构建了一套基础的训练和部署的Pipeline，整个业务交付有一个标准的模式。</p><h2 id="整体的Pipeline"><a href="#整体的Pipeline" class="headerlink" title="整体的Pipeline"></a>整体的Pipeline</h2><ul><li><p>数据部分</p><ul><li>数据采集<br>人脸、人体检测是一个常用的任务，会遇到各种各样的误报和漏检问题，大部分可以通过数据层面解决，面对一个新场景，大概率可能有少量的误报和漏检，只需要采集数量数据集即可。</li><li>数据标注<br>标注员一般很少误标，但是偷懒漏标常有发生，构建了一套自动检查漏标的工具。<br>原理如下： 使用一个高质量的大模型，用此模型去获得标注图片的伪标签，同时用标注文件作为gt，然后计算得分最高的FP，然后进行可视化图片。比较严重的漏标会在这里被发现，循环几次，漏标即可大部分消除</li><li>数据挖掘<br>为了提升整体模型的质量，需要不断用已有的模型去挖掘一些难样本的case<ul><li>model diff</li><li>scale diff</li><li>视频的前后帧挖掘，难正样本和难负样本</li></ul></li></ul></li><li><p>模型训练部分<br>  此部分主要是不断引入外界训练trick，然后在保持推理速度不变的情况下提示精度</p><ul><li>obj 分支，用于mining 一些比较难的样本，训练的时候引入</li><li>margin 用于增大正负样本的分界面</li><li>stitch expand aug 用于提升模型在不同尺度的精度</li></ul></li><li><p>模型部署部分</p><ul><li>构建自动化部署的pipeline，训练完一键打包到不同的平台</li><li>NNie 平台特殊优化，nnie 平台反量化时间比较久，重新设计网络，加大网络，同时减少输出，大幅度提升精度</li></ul></li></ul><h2 id="负责的业务"><a href="#负责的业务" class="headerlink" title="负责的业务"></a>负责的业务</h2><ul><li>人脸检测 9 系列交付，累积交付5个模型</li><li>人脸人体检测，累积交付6个模型</li><li>头肩检测，累积交付3个模型</li><li>其他各类检测模型</li><li>FaceDet 框架负责人</li></ul>]]></content>
+      
+      
       <categories>
-        <category>框架优化</category>
+          
+          <category> 算法优化 </category>
+          
       </categories>
-      <tags>
-        <tag>PyTorch</tag>
-      </tags>
-  </entry>
+      
+      
+        <tags>
+            
+            <tag> PyTorch </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
 </search>
