@@ -19,15 +19,11 @@ layout: homepage
 
 {% include publications.md %}
 
-## 荣誉与竞赛
+## 荣誉、竞赛与学术活动
 
 - **2023、2021**：Low Power Computer Vision Contest，FPGA 赛道第一名。
 - **2021**：Low Power Computer Vision Contest，Tracking 赛道 Honorable Mention。
-- **2023**：商汤科技杰出员工奖。
-- **2022**：商汤团队奖（超大模型和通用模型团队）、优秀团队奖（模型工具链团队）、最受欢迎开源项目（内部）二等奖。
 - **研究生期间**：2018 年国家奖学金、北京市优秀毕业生。
-
-## 开源与学术活动
 
 - **2022**：[United-Perception（UP）开源模型工具链](https://github.com/ModelTC/United-Perception)。
 - **2022**：Practical AI Challenge at AAAI 2023 算法赛题设计负责人。
