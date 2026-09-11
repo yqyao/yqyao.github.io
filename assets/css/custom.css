@@ -1,0 +1,62 @@
+/* Minimal Light: restrained academic typography and figure-led publications. */
+:root { --ink: #263443; --muted: #65717b; --accent: #174d73; --line: #e7ebef; --surface: #fff; }
+body { margin: 0; padding: 0 28px; background: var(--surface); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 16px; line-height: 1.8; }
+.wrapper { width: 1020px; max-width: 100%; margin: 0 auto; }
+header { width: 230px; padding-top: 78px; text-align: center; }
+header h1 { margin-bottom: 22px; color: var(--accent); font-family: Georgia, "Songti SC", "STSong", serif; font-size: 32px; font-weight: 600; line-height: 1.35; }
+.name-en { display: block; margin-top: 7px; font-size: 24px; font-weight: 400; letter-spacing: -.4px; }
+header > a { font-size: 14px; } header .social-icons a { color: var(--accent) !important; }
+section { width: 710px; max-width: 100%; padding-top: 60px; }
+h2 { margin: 32px 0 18px; color: var(--accent); font-family: Georgia, "Songti SC", "STSong", serif; font-size: 25px; font-weight: 600; line-height: 1.4; }
+section > h2:first-child { margin-top: 0; }
+h3 { line-height: 1.5; }
+a { color: var(--accent); } a:hover { color: #287fb0; }
+a:focus-visible, summary:focus-visible { outline: 2px solid #287fb0; outline-offset: 4px; }
+strong { color: var(--ink); font-weight: 600; }
+section p, section li, header a { overflow-wrap: anywhere; }
+section > ul { padding-left: 20px; } section > ul > li { margin-bottom: 9px; }
+.paper-entry { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 24px; align-items: center; margin: 0; padding: 24px 0; }
+.paper-entry + .paper-entry { border-top: 1px solid var(--line); }
+.paper-media { position: relative; min-width: 0; padding-top: 25px; }
+.paper-badge { position: absolute; left: 0; top: 0; display: inline-block; padding: 2px 9px; border-radius: 3px; background: var(--accent); color: #fff; font-family: Georgia, serif; font-size: 13px; line-height: 1.5; letter-spacing: .2px; }
+.paper-media .paper-figure { margin: 7px 0 0; padding: 0; }
+.paper-figure a { display: block; background: #fff; border-radius: 4px; overflow: hidden; }
+.paper-figure img { display: block; width: 100%; height: auto; max-height: 172px; object-fit: contain; }
+.paper-copy h3 { margin: 0 0 9px; font-family: Georgia, "Times New Roman", serif; font-size: 18px; font-weight: 600; line-height: 1.4; }
+.paper-copy h3 a { color: var(--accent); }
+.paper-copy p { margin: 6px 0; }
+.paper-authors { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.paper-venue { font-family: Georgia, serif; font-style: italic; font-size: 15px; line-height: 1.5; }
+.paper-venue strong { font-weight: 400; }
+.paper-description { color: var(--muted); font-size: 14px; line-height: 1.7; }
+.paper-copy .paper-links { display: flex; gap: 7px; margin-top: 10px; font-size: 13px; line-height: 1.5; }
+.paper-links a { padding: 2px 9px; border: 1px solid #b7c7d2; border-radius: 3px; transition: background .15s; }
+.paper-links a:hover { background: var(--accent); border-color: var(--accent); color: white; }
+.more-papers { margin: 16px 0 30px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.more-papers summary { cursor: pointer; padding: 13px 0; color: var(--accent); font-size: 14px; font-weight: 500; }
+.more-papers ol { padding-left: 22px; font-size: 14px; line-height: 1.75; }
+.more-papers li { padding-left: 3px; margin: 0 0 16px; }
+section small { color: var(--muted); font-size: 12px; }
+@media (prefers-color-scheme: dark) { :root { --ink: #e3e8ec; --muted: #aebbc5; --accent: #8abddc; --line: #323e49; --surface: #18212a; } .paper-badge { background: #285571; color: white; } .paper-links a { border-color: #536c7d; } }
+@media (max-width: 1040px) { body { padding: 0 24px; } div.wrapper { width: auto; margin: 0 auto; } header { float: none; position: static; width: auto; padding: 36px 0 16px; } section { float: none; width: 710px; margin: 0 auto; padding: 28px 0 44px; border: 0; border-top: 1px solid var(--line); } header .social-icons { margin-bottom: 0; } }
+@media (max-width: 600px) { body { padding: 0 20px; } header h1 { font-size: 29px; } h2 { font-size: 23px; } .paper-entry { grid-template-columns: 1fr; gap: 18px; padding: 24px 0; } .paper-media { width: 100%; max-width: 300px; } .paper-copy h3 { font-size: 18px; } }
+@media print { body { padding: 0; background: white; color: #222; } .wrapper { width: auto; } header, section { float: none; position: static; width: auto; padding: 12px 0; } header h1 { margin-bottom: 10px; } .paper-entry { break-inside: avoid; } }
+
+/* ATSS best paper nomination. */
+.paper-copy .paper-award { display: inline-block; margin: 5px 0 7px; padding: 4px 9px; border-left: 3px solid #b45c12; border-radius: 2px; background: #fff4e5; font-size: 14px; line-height: 1.6; }
+.paper-award strong { color: #954600; font-weight: 600; }
+@media (prefers-color-scheme: dark) { .paper-copy .paper-award { background: #382b1e; border-color: #e7aa62; } .paper-award strong { color: #f1bf82; } }
+
+/* Typography: change these three font stacks to try another style. */
+:root {
+  --font-body: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-heading: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-paper: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+body { font-family: var(--font-body); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+header h1, h2 { font-family: var(--font-heading); letter-spacing: 0; }
+header h1 { font-size: 30px; font-weight: 600; }
+.name-en { font-family: var(--font-heading); font-size: 22px; font-weight: 400; letter-spacing: 0; }
+h2 { font-size: 23px; font-weight: 600; }
+.paper-copy h3 { font-family: var(--font-paper); font-size: 18px; line-height: 1.45; }
+.paper-badge, .paper-venue { font-family: var(--font-body); font-style: normal; }

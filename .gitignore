@@ -1,0 +1,12 @@
+_site
+.sass-cache
+Gemfile.lock
+*.gem
+.DS_Store
+.jekyll-cache
+git-update.sh
+
+private/
+vendor/
+.bundle/
+.sites-runtime/

@@ -1,0 +1,41 @@
+# 个人资料：日常主要修改此文件与 index.md。
+title: 姚勇强 Yongqiang Yao
+position: 资深算法研究员
+affiliation: 商汤科技 SenseTime
+email: yongqiang_yao@163.com
+lang: zh-CN
+description: 姚勇强的学术主页，关注大模型高效训练、强化学习、工具调用与计算机视觉。
+keywords: 姚勇强, Yongqiang Yao, 大模型, 强化学习, 计算机视觉
+# 发布到用户名.github.io 时填写 url，baseurl 留空。
+# 发布到用户名.github.io/resume 时，baseurl 改为 /resume。
+url: "https://yqyao.github.io"
+baseurl: "https://yqyao.github.io"
+google_scholar: https://scholar.google.com/citations?user=DztTSf0AAAAJ&hl=zh-CN
+github_link: https://github.com/yqyao
+# 有头像或 PDF 后，取消下面对应行的注释。
+# avatar: /assets/img/profile.jpg
+# cv_link: /assets/files/resume.pdf
+favicon: /assets/img/favicon.svg
+favicon_dark: /assets/img/favicon.svg
+enable_footnote: true
+auto_dark_mode: true
+font: "Sans Serif"
+markdown: kramdown
+# 使用下载到本地的模板，不依赖 remote_theme。
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - private
+  - README.md
+  - README.template.md
+  - README_zh_Hans.md
+  - README_zh_Hant.md
+  - README_de.md
+  - LICENSE
+  - html_source_file
+  - .sites-runtime
+
+# 姓名分行展示；title 仍用于浏览器标题。
+name_zh: 姚勇强
+name_en: Yongqiang Yao
