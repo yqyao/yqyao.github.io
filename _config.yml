@@ -9,7 +9,7 @@ keywords: 姚勇强, Yongqiang Yao, 大模型, 强化学习, 计算机视觉
 # 发布到用户名.github.io 时填写 url，baseurl 留空。
 # 发布到用户名.github.io/resume 时，baseurl 改为 /resume。
 url: "https://yqyao.github.io"
-baseurl: "https://yqyao.github.io"
+baseurl: ""
 google_scholar: https://scholar.google.com/citations?user=DztTSf0AAAAJ&hl=zh-CN
 github_link: https://github.com/yqyao
 # 有头像或 PDF 后，取消下面对应行的注释。
