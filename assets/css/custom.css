@@ -77,3 +77,8 @@ h2 { font-size: 23px; font-weight: 600; }
 .work-phase ul { padding-left: 19px; margin: 0; }
 .work-phase li + li { margin-top: 5px; }
 @media (max-width: 600px) { .work-phase h4 { margin-right: 0; margin-bottom: 3px; } .work-dates { display: block; position: static; margin-bottom: 9px; } .company-heading { gap: 14px; } }
+
+/* Full venue details remain subordinate to paper titles. */
+.paper-copy .paper-venue { font-size: 13px; line-height: 1.6; color: var(--muted); font-style: normal; }
+.publication-details { display: inline-block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.publication-details strong { color: var(--muted); font-weight: 500; }
