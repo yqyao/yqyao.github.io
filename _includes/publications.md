@@ -20,7 +20,7 @@
 **Yongqiang Yao**, Jingru Tan, Kaihuan Liang, Feizhao Zhang, Yazhe Niu, Jiahao Hu, Ruihao Gong, Dahua Lin, Ningyi Xu
 {: .paper-authors }
 
-**NeurIPS 2025**
+Advances in Neural Information Processing Systems (NeurIPS), vol. 38, 2025.
 {: .paper-venue }
 
 Improves supervised fine-tuning efficiency for long-context LLMs through hierarchical data packing and training scheduling.
@@ -50,7 +50,7 @@ Improves supervised fine-tuning efficiency for long-context LLMs through hierarc
 **Yongqiang Yao**, Jingru Tan, Jiahao Hu, Feizhao Zhang, Yazhe Niu, Xin Jin, Bo Li, Ruihao Gong, Pengfei Liu, Dahua Lin, Ningyi Xu
 {: .paper-authors }
 
-**ICML 2025**
+Proceedings of the 42nd International Conference on Machine Learning (ICML), PMLR 267, pp. 71765–71779, 2025.
 {: .paper-venue }
 
 Accelerates vision-language model training by balancing computation across data, model, and memory dimensions.
@@ -80,7 +80,7 @@ Accelerates vision-language model training by balancing computation across data,
 Jingru Tan, Bo Li, Xin Lu, **Yongqiang Yao**, Fengwei Yu, Tong He, Wanli Ouyang
 {: .paper-authors }
 
-**IEEE TPAMI, 2023**
+IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), vol. 45, no. 11, pp. 13876–13892, 2023.
 {: .paper-venue }
 
 **Corresponding Author**
@@ -113,7 +113,7 @@ Dynamically balances positive and negative gradients to improve long-tailed obje
 Bo Li, **Yongqiang Yao**, Jingru Tan, Gang Zhang, Fengwei Yu, Jianwei Lu, Ye Luo
 {: .paper-authors }
 
-**CVPR 2022**
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pp. 6990–6999, 2022.
 {: .paper-venue }
 
 **Co-first Author**
@@ -146,7 +146,7 @@ Addresses class imbalance with a tailored loss function for dense long-tailed ob
 Shifeng Zhang, Cheng Chi, **Yongqiang Yao**, Zhen Lei, Stan Z Li
 {: .paper-authors }
 
-**CVPR 2020**
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pp. 9759–9768, 2020.
 {: .paper-venue }
 
 **Best Paper Award Nominee**
@@ -165,31 +165,44 @@ Unifies sample assignment in anchor-based and anchor-free detection through adap
 
 ### Other Publications (13)
 
-1. Haiwen Diao, Penghao Wu, Hanming Deng, …, **Yongqiang Yao**, …, Dahua Lin. [SenseNova-U1: Unifying Multimodal Understanding and Generation with NEO-unify Architecture](https://arxiv.org/abs/2605.12500). **arXiv, 2026**
+1. Haiwen Diao, Penghao Wu, Hanming Deng, …, **Yongqiang Yao**, …, Dahua Lin. [SenseNova-U1: Unifying Multimodal Understanding and Generation with NEO-unify Architecture](https://arxiv.org/abs/2605.12500).  
+   <span class="publication-details"><strong>arXiv preprint</strong>, arXiv:2605.12500, 2026.</span>
 
-2. Bo Li, **Yongqiang Yao**, Jingru Tan, Dandan Zhu, Ruihao Gong, Ye Luo, Jianwei Lu. [Robust Long-Tailed Recognition with Distribution-Aware Adversarial Example Generation](https://doi.org/10.1016/j.neunet.2024.106932). **Neural Networks, 2025**
+2. Bo Li, **Yongqiang Yao**, Jingru Tan, Dandan Zhu, Ruihao Gong, Ye Luo, Jianwei Lu. [Robust Long-Tailed Recognition with Distribution-Aware Adversarial Example Generation](https://doi.org/10.1016/j.neunet.2024.106932).  
+   <span class="publication-details"><strong>Neural Networks</strong>, vol. 184, article 106932, 2025.</span>
 
-3. Leo Chen, Benjamin Boardley, Ping Hu, Yiru Wang, Yifan Pu, Xin Jin, **Yongqiang Yao**, et al. [2023 Low-Power Computer Vision Challenge (LPCVC) Summary](https://arxiv.org/abs/2403.07153). **arXiv, 2024**
+3. Leo Chen, Benjamin Boardley, Ping Hu, Yiru Wang, Yifan Pu, Xin Jin, **Yongqiang Yao**, et al. [2023 Low-Power Computer Vision Challenge (LPCVC) Summary](https://arxiv.org/abs/2403.07153).  
+   <span class="publication-details"><strong>arXiv preprint</strong>, arXiv:2403.07153, 2024.</span>
 
-4. Zhiwei Dong, Ruihao Gong, Yang Yong, Shuo Wu, **Yongqiang Yao**, Song-Lu Chen, Xu-Cheng Yin; [Tool Playgrounds: A Comprehensive and Analyzable Benchmark for LLM Tool Invocation](https://doi.org/10.1109/ICASSP49660.2025.10890828). **ICASSP 2025**
+4. Zhiwei Dong, Ruihao Gong, Yang Yong, Shuo Wu, **Yongqiang Yao**, Song-Lu Chen, Xu-Cheng Yin; [Tool Playgrounds: A Comprehensive and Analyzable Benchmark for LLM Tool Invocation](https://doi.org/10.1109/ICASSP49660.2025.10890828).  
+   <span class="publication-details"><strong>IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)</strong>, pp. 1–5, 2025.</span>
 
-5. Rongkun Xue, Yazhe Niu, Shuai Hu, Zixin Yin, **Yongqiang Yao**, Jing Yan; [HH-Codec: High Compression High-fidelity Discrete Neural Codec for Spoken Language Modeling](https://arxiv.org/abs/2507.18897). **ICML 2025 Tokenization Workshop**
+5. Rongkun Xue, Yazhe Niu, Shuai Hu, Zixin Yin, **Yongqiang Yao**, Jing Yang; [HH-Codec: High Compression High-fidelity Discrete Neural Codec for Spoken Language Modeling](https://arxiv.org/abs/2507.18897).  
+   <span class="publication-details"><strong>Tokenization Workshop (TokShop), International Conference on Machine Learning (ICML)</strong>, 2025. Non-archival workshop presentation; arXiv:2507.18897.</span>
 
-6. Feiyang Wu, Zhuohang Bian, Guoyang Duan, Tianle Xu, Junchi Wu, Teng Ma, **Yongqiang Yao**, Ruihao Gong, Youwei Zhuo; [TokenSim: Enabling hardware and software exploration for large language model inference systems](https://arxiv.org/abs/2503.08415). **ISAPPT 2025**
+6. Feiyang Wu, Zhuohang Bian, Guoyang Duan, Tianle Xu, Junchi Wu, Teng Ma, **Yongqiang Yao**, Ruihao Gong, Youwei Zhuo; [TokenSim: Enabling hardware and software exploration for large language model inference systems](https://arxiv.org/abs/2503.08415).  
+   <span class="publication-details"><strong>16th International Symposium on Advanced Parallel Processing Technologies (APPT 2025)</strong>, Lecture Notes in Computer Science, vol. 16062, pp. 257–266. Springer, 2026 (first online: November 2025).</span>
 
 
-7. Bo Li, **Yongqiang Yao**, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. [Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning](https://arxiv.org/abs/2210.05568).
+7. Bo Li, **Yongqiang Yao**, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. [Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning](https://arxiv.org/abs/2210.05568).  
+   <span class="publication-details"><strong>arXiv preprint</strong>, arXiv:2210.05568, 2022.</span>
 
-8. **Yongqiang Yao**, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; [Cross-dataset training for class increasing object detection](https://arxiv.org/abs/2001.04621).
+8. **Yongqiang Yao**, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; [Cross-dataset training for class increasing object detection](https://arxiv.org/abs/2001.04621).  
+   <span class="publication-details"><strong>arXiv preprint</strong>, arXiv:2001.04621, 2020.</span>
 
-9. **Yongqiang Yao**, Yuan Dong, Zesang Huang, Hongliang Bai. [Dense receptive field for object detection](https://doi.org/10.1109/ICPR.2018.8546207) // 2018 24th International Conference on Pattern Recognition. **ICPR 2018**
+9. **Yongqiang Yao**, Yuan Dong, Zesang Huang, Hongliang Bai. [Dense receptive field for object detection](https://doi.org/10.1109/ICPR.2018.8546207).  
+   <span class="publication-details"><strong>24th International Conference on Pattern Recognition (ICPR)</strong>, pp. 1815–1820, 2018.</span>
 
-10. Weitao Feng, Lei Bai, **Yongqiang Yao**, Fengwei Yu, Wanli Ouyang. [Towards Frame Rate Agnostic Multi-Object Tracking](https://arxiv.org/abs/2209.11404). **IJCV**
+10. Weitao Feng, Lei Bai, **Yongqiang Yao**, Fengwei Yu, Wanli Ouyang. [Towards Frame Rate Agnostic Multi-Object Tracking](https://arxiv.org/abs/2209.11404).  
+   <span class="publication-details"><strong>International Journal of Computer Vision (IJCV)</strong>, vol. 132, no. 5, pp. 1443–1462, 2024.</span>
 
-11. Weitao Feng, Lei Bai, **Yongqiang Yao**, Weihao Gan, Wei Wu, Wanli Ouyang. [Similarity-and Quality-Guided Relation Learning for Joint Detection and Tracking](https://doi.org/10.1109/TMM.2023.3279670). **TMM**
+11. Weitao Feng, Lei Bai, **Yongqiang Yao**, Weihao Gan, Wei Wu, Wanli Ouyang. [Similarity-and Quality-Guided Relation Learning for Joint Detection and Tracking](https://doi.org/10.1109/TMM.2023.3279670).  
+   <span class="publication-details"><strong>IEEE Transactions on Multimedia (TMM)</strong>, vol. 26, pp. 1267–1280, 2024.</span>
 
-12. Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, **Yongqiang Yao**, Tianzi Xiaotian, Fengwei Yu, Xianglong Liu. [SysNoise: Exploring and Benchmarking Training-Deployment System Inconsistency](https://arxiv.org/abs/2307.00280). **MLSys**
+12. Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, **Yongqiang Yao**, Tianzi Xiaotian, Fengwei Yu, Xianglong Liu. [SysNoise: Exploring and Benchmarking Training-Deployment System Inconsistency](https://arxiv.org/abs/2307.00280).  
+   <span class="publication-details"><strong>Proceedings of Machine Learning and Systems (MLSys)</strong>, vol. 5, 2023.</span>
 
-13. Bo Li, **Yongqiang Yao**, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo. [Rectify representation bias in vision-language models for long-tailed recognition](https://doi.org/10.1016/j.neunet.2024.106134). **Neural Networks**
+13. Bo Li, **Yongqiang Yao**, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo. [Rectify representation bias in vision-language models for long-tailed recognition](https://doi.org/10.1016/j.neunet.2024.106134).  
+   <span class="publication-details"><strong>Neural Networks</strong>, vol. 172, article 106134, 2024.</span>
 
 </div>

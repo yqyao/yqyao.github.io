@@ -31,7 +31,7 @@ I received my B.Eng. in Electronic Science and Technology in 2017 and M.Eng. in 
 </div>
 <div class="work-phase" markdown="1">
 
-#### Large Model Post-Training
+#### Large Language Model Post-Training
 <span class="work-dates">2023 — 2025</span>
 
 Optimized the EasyLLM post-training framework to improve training efficiency for language and multimodal models.
