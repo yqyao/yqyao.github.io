@@ -163,27 +163,33 @@ Unifies sample assignment in anchor-based and anchor-free detection through adap
 
 <div class="more-papers" markdown="1">
 
-### Other Publications (10)
+### Other Publications (13)
 
-1. Zhiwei Dong, Ruihao Gong, Yang Yong, Shuo Wu, **Yongqiang Yao**, Song-Lu Chen, Xu-Cheng Yin; Tool Playgrounds: A Comprehensive and Analyzable Benchmark for LLM Tool Invocation. **ICASSP 2025**
+1. Haiwen Diao, Penghao Wu, Hanming Deng, …, **Yongqiang Yao**, …, Dahua Lin. [SenseNova-U1: Unifying Multimodal Understanding and Generation with NEO-unify Architecture](https://arxiv.org/abs/2605.12500). **arXiv, 2026**
 
-2. Rongkun Xue, Yazhe Niu, Shuai Hu, Zixin Yin, **Yongqiang Yao**, Jing Yan; HH-Codec: High Compression High-fidelity Discrete Neural Codec for Spoken Language Modeling. **ICML 2025 Tokenization Workshop**
+2. Bo Li, **Yongqiang Yao**, Jingru Tan, Dandan Zhu, Ruihao Gong, Ye Luo, Jianwei Lu. [Robust Long-Tailed Recognition with Distribution-Aware Adversarial Example Generation](https://doi.org/10.1016/j.neunet.2024.106932). **Neural Networks, 2025**
 
-3. Feiyang Wu, Zhuohang Bian, Guoyang Duan, Tianle Xu, Junchi Wu, Teng Ma, **Yongqiang Yao**, Ruihao Gong, Youwei Zhuo; TokenSim: Enabling hardware and software exploration for large language model inference systems. **ISAPPT 2025**
+3. Leo Chen, Benjamin Boardley, Ping Hu, Yiru Wang, Yifan Pu, Xin Jin, **Yongqiang Yao**, et al. [2023 Low-Power Computer Vision Challenge (LPCVC) Summary](https://arxiv.org/abs/2403.07153). **arXiv, 2024**
+
+4. Zhiwei Dong, Ruihao Gong, Yang Yong, Shuo Wu, **Yongqiang Yao**, Song-Lu Chen, Xu-Cheng Yin; Tool Playgrounds: A Comprehensive and Analyzable Benchmark for LLM Tool Invocation. **ICASSP 2025**
+
+5. Rongkun Xue, Yazhe Niu, Shuai Hu, Zixin Yin, **Yongqiang Yao**, Jing Yan; HH-Codec: High Compression High-fidelity Discrete Neural Codec for Spoken Language Modeling. **ICML 2025 Tokenization Workshop**
+
+6. Feiyang Wu, Zhuohang Bian, Guoyang Duan, Tianle Xu, Junchi Wu, Teng Ma, **Yongqiang Yao**, Ruihao Gong, Youwei Zhuo; TokenSim: Enabling hardware and software exploration for large language model inference systems. **ISAPPT 2025**
 
 
-4. Bo Li, **Yongqiang Yao**, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning.
+7. Bo Li, **Yongqiang Yao**, Jingru Tan, Xin Lu, Fengwei Yu, Ye Luo, Jianwei Lu. Improving Long-tailed Object Detection with Image-Level Supervision by Multi-Task Collaborative Learning.
 
-5. **Yongqiang Yao**, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; Cross-dataset training for class increasing object detection.
+8. **Yongqiang Yao**, Yan Wang, Yu Guo, Jiaojiao Lin, Hongwei Qin, Junjie Yan; Cross-dataset training for class increasing object detection.
 
-6. **Yongqiang Yao**, Yuan Dong, Zesang Huang, Hongliang Bai. Dense receptive field for object detection // 2018 24th International Conference on Pattern Recognition. **ICPR 2018**
+9. **Yongqiang Yao**, Yuan Dong, Zesang Huang, Hongliang Bai. Dense receptive field for object detection // 2018 24th International Conference on Pattern Recognition. **ICPR 2018**
 
-7. Weitao Feng, Lei Bai, **Yongqiang Yao**, Fengwei Yu, Wanli Ouyang. Towards Frame Rate Agnostic Multi-Object Tracking. **IJCV**
+10. Weitao Feng, Lei Bai, **Yongqiang Yao**, Fengwei Yu, Wanli Ouyang. Towards Frame Rate Agnostic Multi-Object Tracking. **IJCV**
 
-8. Weitao Feng, Lei Bai, **Yongqiang Yao**, Weihao Gan, Wei Wu, Wanli Ouyang. Similarity-and Quality-Guided Relation Learning for Joint Detection and Tracking. **TMM**
+11. Weitao Feng, Lei Bai, **Yongqiang Yao**, Weihao Gan, Wei Wu, Wanli Ouyang. Similarity-and Quality-Guided Relation Learning for Joint Detection and Tracking. **TMM**
 
-9. Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, **Yongqiang Yao**, Tianzi Xiaotian, Fengwei Yu, Xianglong Liu. SysNoise: Exploring and Benchmarking Training-Deployment System Inconsistency. **MLSys**
+12. Yan Wang, Yuhang Li, Ruihao Gong, Aishan Liu, Yanfei Wang, Jian Hu, **Yongqiang Yao**, Tianzi Xiaotian, Fengwei Yu, Xianglong Liu. SysNoise: Exploring and Benchmarking Training-Deployment System Inconsistency. **MLSys**
 
-10. Bo Li, **Yongqiang Yao**, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo. Rectify representation bias in vision-language models for long-tailed recognition. **Neural Networks**
+13. Bo Li, **Yongqiang Yao**, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo. Rectify representation bias in vision-language models for long-tailed recognition. **Neural Networks**
 
 </div>
