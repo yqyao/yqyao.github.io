@@ -2,28 +2,65 @@
 layout: homepage
 ---
 
-## 个人简介
+## About Me
 
-我是姚勇强，现任商汤科技资深算法研究员，上海交通大学博士在读。主要关注大模型后训练框架与 RL / Agentic RL / OPD 优化，曾从事目标检测、长尾学习与模型工具链研发。
+I am a Senior Research Scientist at SenseTime and a Ph.D. student at Shanghai Jiao Tong University. My current focus is efficient post-training for large language models, including RL, Agentic RL, and OPD. Previously, I worked on object detection, long-tailed recognition, and model development frameworks.
 
-本科与硕士均就读于北京邮电大学，分别于 2017 年获得电子科学与技术学士学位、2020 年获得电子与通信工程硕士学位（本科推免）。
+I received my B.Eng. in Electronic Science and Technology in 2017 and M.Eng. in Electronics and Communication Engineering in 2020 from Beijing University of Posts and Telecommunications, with recommendation-based admission to the master's program.
 
-## 工作经历
+## Work Experience
 
-**商汤科技｜2018 — 至今**
+<div class="work-experience" markdown="1">
+<div class="company-heading">
+  <img class="company-logo" src="{{ '/assets/img/sensetime-logo.png' | relative_url }}" alt="SenseTime logo" width="72" height="72">
+  <div class="company-info">
+    <h3>SenseTime Research</h3>
+    <p class="company-role">Senior Research Scientist <span>(current role)</span></p>
+    <p class="company-dates">2018 — Present</p>
+  </div>
+</div>
 
-- **2018 — 2020｜人脸检测算法**：负责人脸、人脸人体及头肩检测等算法研发。
-- **2020 — 2023｜视觉算法与框架研发**：开展目标检测与长尾学习研究，负责联合感知模型生产框架研发，支持业务模型交付。
-- **2023 — 2025｜大模型后训练**：负责 EasyLLM 后训练框架优化，提升语言与多模态模型的训练效率。
-- **2025 — 至今｜RL / Agentic RL / OPD**：负责大模型强化学习框架，开展 RL / Agentic RL / OPD 训练优化。
+<div class="work-phase" markdown="1">
+
+#### RL / Agentic RL / OPD
+<span class="work-dates">2025 — Present</span>
+
+- Build an internal reinforcement learning framework based on VERL to support RL training for the company's foundation models.
+- Develop an in-house framework for black-box Agentic RL training.
+
+</div>
+<div class="work-phase" markdown="1">
+
+#### Large Model Post-Training
+<span class="work-dates">2023 — 2025</span>
+
+Optimized the EasyLLM post-training framework to improve training efficiency for language and multimodal models.
+
+</div>
+<div class="work-phase" markdown="1">
+
+#### Computer Vision Algorithms & Frameworks
+<span class="work-dates">2020 — 2023</span>
+
+Conducted research on object detection and long-tailed recognition, and developed a unified perception framework for production model development and delivery.
+
+</div>
+<div class="work-phase" markdown="1">
+
+#### Face Detection Algorithms
+<span class="work-dates">2018 — 2020</span>
+
+Developed algorithms for face detection, joint face-and-body detection, and head-and-shoulder detection.
+
+</div>
+</div>
 
 {% include publications.md %}
 
-## 荣誉、竞赛与学术活动
+## Honors & Academic Activities
 
-- **2023、2021**：Low Power Computer Vision Contest，FPGA 赛道第一名。
-- **2021**：Low Power Computer Vision Contest，Tracking 赛道 Honorable Mention。
-- **研究生期间**：2018 年国家奖学金、北京市优秀毕业生。
-
-- **2022**：[United-Perception（UP）开源模型工具链](https://github.com/ModelTC/United-Perception)。
-- **2022**：Practical AI Challenge at AAAI 2023 算法赛题设计负责人。
+- **2023, 2021**: First Place, FPGA Track, Low Power Computer Vision Contest.
+- **2021**: Honorable Mention, Tracking Track, Low Power Computer Vision Contest.
+- **Graduate studies**: National Scholarship (2018); Beijing Outstanding Graduate.
+- **2022**: [United-Perception (UP), an open-source model development framework](https://github.com/ModelTC/United-Perception).
+- **2022**: Led algorithm challenge design for the Practical AI Challenge at AAAI 2023.

@@ -40,7 +40,7 @@
         <a class="image avatar"><img src="{{ site.avatar | relative_url }}" alt="avatar" /></a>
         {% endif %}
 
-        <h1>{{ site.name_zh | default: site.title }}{% if site.name_en %}<span class="name-en">{{ site.name_en }}</span>{% endif %}</h1>
+        <h1>{{ site.name_en | default: site.title }}</h1>
 
         {% if site.position %}
         <position style="font-size:1.10rem;">{{ site.position }}</position>

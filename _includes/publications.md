@@ -1,4 +1,4 @@
-## 论文著作
+## Publications
 
 <!-- 每篇代表作使用一个 paper-entry；标题、作者、简介和链接均可直接编辑。 -->
 
@@ -8,7 +8,7 @@
 
 <span class="paper-badge">NeurIPS 2025</span>
 
-[![HBP 会议海报预览，点击查看完整 Poster]({{ '/assets/img/papers/hbp-poster.png' | relative_url }})](https://neurips.cc/media/PosterPDFs/NeurIPS%202025/119808.png?t=1760008428.0570085)
+[![HBP conference poster; click to view full size]({{ '/assets/img/papers/hbp-poster.png' | relative_url }})](https://neurips.cc/media/PosterPDFs/NeurIPS%202025/119808.png?t=1760008428.0570085)
 {: .paper-figure }
 
 </div>
@@ -23,7 +23,7 @@
 **NeurIPS 2025**
 {: .paper-venue }
 
-通过分层数据打包与训练调度，提升长上下文模型的监督微调效率。
+Improves supervised fine-tuning efficiency for long-context LLMs through hierarchical data packing and training scheduling.
 {: .paper-description }
 
 [PDF](https://arxiv.org/pdf/2503.07680) [Code](https://github.com/ModelTC/HBP) [Poster](https://neurips.cc/media/PosterPDFs/NeurIPS%202025/119808.png?t=1760008428.0570085)
@@ -38,7 +38,7 @@
 
 <span class="paper-badge">ICML 2025</span>
 
-[![OMNIBAL 会议海报预览，点击查看完整 Poster]({{ '/assets/img/papers/omnibal-poster.png' | relative_url }})](https://icml.cc/media/PosterPDFs/ICML%202025/43963.png?t=1750073736.635405)
+[![OmniBal conference poster; click to view full size]({{ '/assets/img/papers/omnibal-poster.png' | relative_url }})](https://icml.cc/media/PosterPDFs/ICML%202025/43963.png?t=1750073736.635405)
 {: .paper-figure }
 
 </div>
@@ -53,7 +53,7 @@
 **ICML 2025**
 {: .paper-venue }
 
-从数据、模型与显存三个层面均衡计算负载，加速视觉语言模型训练。
+Accelerates vision-language model training by balancing computation across data, model, and memory dimensions.
 {: .paper-description }
 
 [PDF](https://arxiv.org/pdf/2407.20761) [Code](https://github.com/ModelTC/OmniBal) [Poster](https://icml.cc/media/PosterPDFs/ICML%202025/43963.png?t=1750073736.635405)
@@ -68,7 +68,7 @@
 
 <span class="paper-badge">TPAMI 2023</span>
 
-[![The Equalization Losses 论文配图]({{ '/assets/img/papers/equalization-losses.png' | relative_url }})]({{ '/assets/img/papers/equalization-losses.png' | relative_url }})
+[![The Equalization Losses method overview]({{ '/assets/img/papers/equalization-losses.png' | relative_url }})]({{ '/assets/img/papers/equalization-losses.png' | relative_url }})
 {: .paper-figure }
 
 </div>
@@ -83,10 +83,10 @@ Jingru Tan, Bo Li, Xin Lu, **Yongqiang Yao**, Fengwei Yu, Tong He, Wanli Ouyang
 **IEEE TPAMI, 2023**
 {: .paper-venue }
 
-**Corresponding Author · 通讯作者**
+**Corresponding Author**
 {: .paper-award }
 
-通过动态平衡正负梯度，统一改善长尾目标检测、图像分类与语义分割。
+Dynamically balances positive and negative gradients to improve long-tailed object detection, image classification, and semantic segmentation.
 {: .paper-description }
 
 [PDF](https://arxiv.org/pdf/2210.05566) [Code](https://github.com/ModelTC/United-Perception) [IEEE](https://doi.org/10.1109/TPAMI.2023.3298433)
@@ -101,7 +101,7 @@ Jingru Tan, Bo Li, Xin Lu, **Yongqiang Yao**, Fengwei Yu, Tong He, Wanli Ouyang
 
 <span class="paper-badge">CVPR 2022</span>
 
-[![EFL 论文方法概览图]({{ '/assets/img/papers/efl.png' | relative_url }})]({{ '/assets/img/papers/efl.png' | relative_url }})
+[![EFL method overview]({{ '/assets/img/papers/efl.png' | relative_url }})]({{ '/assets/img/papers/efl.png' | relative_url }})
 {: .paper-figure }
 
 </div>
@@ -116,7 +116,10 @@ Bo Li, **Yongqiang Yao**, Jingru Tan, Gang Zhang, Fengwei Yu, Jianwei Lu, Ye Luo
 **CVPR 2022**
 {: .paper-venue }
 
-针对类别不均衡设计损失函数，改善密集长尾目标检测。
+**Co-first Author**
+{: .paper-award }
+
+Addresses class imbalance with a tailored loss function for dense long-tailed object detection.
 {: .paper-description }
 
 [PDF](https://openaccess.thecvf.com/content/CVPR2022/papers/Li_Equalized_Focal_Loss_for_Dense_Long-Tailed_Object_Detection_CVPR_2022_paper.pdf) [Code](https://github.com/ModelTC/United-Perception)
@@ -131,7 +134,7 @@ Bo Li, **Yongqiang Yao**, Jingru Tan, Gang Zhang, Fengwei Yu, Jianwei Lu, Ye Luo
 
 <span class="paper-badge">CVPR 2020</span>
 
-[![ATSS 论文方法概览图]({{ '/assets/img/papers/atss.png' | relative_url }})]({{ '/assets/img/papers/atss.png' | relative_url }})
+[![ATSS method overview]({{ '/assets/img/papers/atss.png' | relative_url }})]({{ '/assets/img/papers/atss.png' | relative_url }})
 {: .paper-figure }
 
 </div>
@@ -146,10 +149,10 @@ Shifeng Zhang, Cheng Chi, **Yongqiang Yao**, Zhen Lei, Stan Z Li
 **CVPR 2020**
 {: .paper-venue }
 
-**Best Paper Award Nominee · 最佳论文提名**
+**Best Paper Award Nominee**
 {: .paper-award }
 
-通过自适应训练样本选择，统一 anchor-based 与 anchor-free 检测的样本分配。
+Unifies sample assignment in anchor-based and anchor-free detection through adaptive training sample selection.
 {: .paper-description }
 
 [PDF](https://openaccess.thecvf.com/content_CVPR_2020/papers/Zhang_Bridging_the_Gap_Between_Anchor-Based_and_Anchor-Free_Detection_via_Adaptive_CVPR_2020_paper.pdf) [Code](https://github.com/sfzhang15/ATSS)
@@ -158,8 +161,9 @@ Shifeng Zhang, Cheng Chi, **Yongqiang Yao**, Zhen Lei, Stan Z Li
 </div>
 </div>
 
-<details class="more-papers" markdown="1">
-<summary>其他论文（10 篇）</summary>
+<div class="more-papers" markdown="1">
+
+### Other Publications (10)
 
 1. Zhiwei Dong, Ruihao Gong, Yang Yong, Shuo Wu, **Yongqiang Yao**, Song-Lu Chen, Xu-Cheng Yin; Tool Playgrounds: A Comprehensive and Analyzable Benchmark for LLM Tool Invocation. **ICASSP 2025**
 
@@ -182,4 +186,4 @@ Shifeng Zhang, Cheng Chi, **Yongqiang Yao**, Zhen Lei, Stan Z Li
 
 10. Bo Li, **Yongqiang Yao**, Jingru Tan, Ruihao Gong, Jianwei Lu, Ye Luo. Rectify representation bias in vision-language models for long-tailed recognition. **Neural Networks**
 
-</details>
+</div>
