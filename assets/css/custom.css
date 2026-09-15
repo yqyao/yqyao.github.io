@@ -82,3 +82,7 @@ h2 { font-size: 23px; font-weight: 600; }
 .paper-copy .paper-venue { font-size: 13px; line-height: 1.6; color: var(--muted); font-style: normal; }
 .publication-details { display: inline-block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .publication-details strong { color: var(--muted); font-weight: 500; }
+
+/* Frame the supplied portrait without modifying the original image. */
+.profile-photo { position: relative; width: 170px; height: 190px; overflow: hidden; margin: 0 auto 24px; border-radius: 14px; background: #bcd5e2; }
+.profile-photo img { position: absolute; width: 260%; max-width: none; height: auto; left: -95%; top: -100%; }

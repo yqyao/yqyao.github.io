@@ -13,7 +13,7 @@ baseurl: ""
 google_scholar: https://scholar.google.com/citations?user=DztTSf0AAAAJ&hl=en
 github_link: https://github.com/yqyao
 # 有头像或 PDF 后，取消下面对应行的注释。
-# avatar: /assets/img/profile.jpg
+avatar: /assets/img/profile.jpg
 # cv_link: /assets/files/resume.pdf
 favicon: /assets/img/favicon.svg
 favicon_dark: /assets/img/favicon.svg
