@@ -6,6 +6,39 @@
 
 <div class="paper-media" markdown="1">
 
+<span class="paper-badge">NeurIPS 2026</span>
+
+[![RollVerify conference poster; click to view the full PDF]({{ '/assets/img/papers/rollverify-poster.png' | relative_url }})]({{ '/assets/files/rollverify-poster.pdf' | relative_url }})
+{: .paper-figure }
+
+</div>
+
+<div class="paper-copy" markdown="1">
+
+### [RollVerify: Bridging Efficiency and Accuracy in Long-Tail Rollout Reinforcement Learning](https://arxiv.org/abs/2610.09914)
+
+**Yongqiang Yao**, Jinru Tan, Kaihuan Liang, Zixin Yin, Yazhe Niu, Ruihao Gong, Dahua Lin, Ningyi Xu
+{: .paper-authors }
+
+Conference on Neural Information Processing Systems (NeurIPS), 2026. Accepted; arXiv:2610.09914.
+{: .paper-venue }
+
+**Co-first Author**
+{: .paper-award }
+
+Verifies and repairs off-policy trajectories in partial rollout to reduce reinforcement learning training cost while preserving accuracy comparable to on-policy training.
+{: .paper-description }
+
+[PDF](https://arxiv.org/pdf/2610.09914) [arXiv](https://arxiv.org/abs/2610.09914) [Poster]({{ '/assets/files/rollverify-poster.pdf' | relative_url }})
+{: .paper-links }
+
+</div>
+</div>
+
+<div class="paper-entry" markdown="1">
+
+<div class="paper-media" markdown="1">
+
 <span class="paper-badge">NeurIPS 2025</span>
 
 [![HBP conference poster; click to view full size]({{ '/assets/img/papers/hbp-poster.png' | relative_url }})](https://neurips.cc/media/PosterPDFs/NeurIPS%202025/119808.png?t=1760008428.0570085)

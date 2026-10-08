@@ -10,7 +10,7 @@ I received my B.Eng. in Electronic Science and Technology in 2017 and M.Eng. in 
 
 ## News
 
-- **[2026.09]** **Rollverify** was accepted to **NeurIPS 2026**.
+- **[2026.09]** **[RollVerify](https://arxiv.org/abs/2610.09914)** was accepted to **NeurIPS 2026**.
 - **[2025.09]** **[HBP](https://neurips.cc/virtual/2025/loc/san-diego/poster/119808)** was accepted to **NeurIPS 2025**.
 - **[2025.05]** **[OmniBal](https://icml.cc/virtual/2025/poster/43963)** was accepted to **ICML 2025**.
 
