@@ -23,9 +23,6 @@
 Conference on Neural Information Processing Systems (NeurIPS), 2026. Accepted; arXiv:2610.09914.
 {: .paper-venue }
 
-**Co-first Author**
-{: .paper-award }
-
 Verifies and repairs off-policy trajectories in partial rollout to reduce reinforcement learning training cost while preserving accuracy comparable to on-policy training.
 {: .paper-description }
 
